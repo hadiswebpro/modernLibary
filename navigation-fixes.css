@@ -1,175 +1,103 @@
-/* MODERN LIBRARY — RESPONSIVE VIEW LAYOUT */
-
-.menu-btn { display: none; }
+/* MODERN LIBRARY — SHARED BOOK VIEWER + RESPONSIVE LAYOUT */
 .home-section { display: none; }
 .home-section.view-active { display: block; }
+.menu-btn { display: none; }
 
-/* Desktop: Library books + Open a Book side by side. */
-.library-page {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
-    gap: 18px;
-    align-items: start;
-}
-
-.book-details {
+/* One shared Open a Story viewer for every section. */
+main > .book-details {
     position: sticky;
     top: 88px;
-    width: 100%;
+    z-index: 20;
+    width: min(330px, 100%);
+    min-height: 0;
+    margin: 0 0 18px auto;
+}
+main > .book-details.empty { min-height: 92px; padding: 18px; }
+main > .book-details:not(.empty) {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+main > .book-details .details-book { width: 100%; min-height: 350px; }
+
+/* Library no longer owns the viewer. */
+.library-page { display: block; }
+.library-content { width: 100%; min-width: 0; }
+
+/* Desktop / landscape: shared viewer stays on the right. */
+@media (min-width: 851px) {
+    main > .book-details { float: right; margin-left: 18px; }
 }
 
-.details-book {
-    width: 100%;
-    min-height: 350px;
-}
-
-/* Tablet */
+/* Tablet / mobile: shared viewer is above the active books. */
 @media (max-width: 850px) {
     .menu-btn { display: grid; }
-
-    .library-page {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    /* Selected book details sit above the library cards. */
-    .book-details {
+    main > .book-details {
         position: relative;
-        inset: auto;
-        order: -1;
+        top: auto;
+        float: none;
+        clear: both;
+        width: min(60vw, 300px);
+        min-height: 72px;
+        margin: 0 auto 14px;
+    }
+    main > .book-details.empty { min-height: 72px; padding: 12px; }
+    main > .book-details:not(.empty) { padding: 0; }
+    main > .book-details .details-book {
         width: 100%;
         min-height: 0;
-        padding: 0;
-        overflow: visible;
-    }
-
-    /* Empty Open a Book does not waste space. */
-    .book-details.empty { display: none; }
-
-    .details-book {
-        min-height: 0;
-        height: auto;
+        max-height: 320px;
         padding: 18px 16px;
+        overflow-y: auto;
     }
-
-    .library-content {
-        width: 100%;
-        min-width: 0;
-        padding: 14px;
-    }
-
-    .library-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 10px;
-    }
-
     .library-books,
     #reading-container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 9px;
     }
-
-    .book-card {
-        height: 155px;
-        min-height: 155px;
-        padding: 13px 11px 11px 15px;
-    }
+    .book-card { height: 155px; min-height: 155px; padding: 13px 11px 11px 15px; }
 }
 
-/* Mobile */
+/* Mobile: small book-sized viewer with visible background around it. */
 @media (max-width: 600px) {
-    /* Currently Reading remains compact and visible on Home. */
-    .currently-reading-section { margin-bottom: 18px; }
-    .currently-reading {
-        padding: 11px;
+    main > .book-details {
+        width: 60vw;
+        max-width: 260px;
+        min-width: 205px;
+        margin: 0 auto 12px;
         border-radius: 14px;
     }
-
-    #reading-container,
-    .library-books {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-    }
-
-    /* My Library / All Your Stories fits the viewport cleanly. */
-    .library-content {
-        padding: 11px;
-        border-radius: 14px;
-    }
-
-    .library-header {
-        margin-bottom: 12px;
-    }
-
-    .library-heading > span { font-size: .56rem; }
-    .library-heading small { font-size: .53rem; }
-
-    .library-filter {
-        width: 100%;
-        gap: 5px;
-    }
-
-    .library-filter-btn {
-        min-height: 28px;
-        padding: 5px 8px;
-        font-size: .55rem;
-    }
-
-    .book-card {
-        height: 150px;
-        min-height: 150px;
-        padding: 12px 10px 10px 14px;
-    }
-
-    .book-title { font-size: .86rem; }
-    .book-author { font-size: .57rem; }
-
-    /* Open a Book appears above the cards and is compact after selection. */
-    .details-book {
+    main > .book-details.empty { min-height: 66px; padding: 10px; }
+    main > .book-details .details-book {
+        max-height: 245px;
         min-height: 0;
-        max-height: 280px;
-        padding: 15px 14px;
-        overflow-y: auto;
+        padding: 14px 13px;
         border-radius: 7px 13px 13px 7px;
     }
-
-    .details-title { font-size: 1.08rem; }
-    .details-author { margin-bottom: 9px; font-size: .58rem; }
-    .details-info { gap: 4px; margin-top: 7px; }
-    .details-info p { font-size: .56rem; line-height: 1.35; }
-    .details-quote { margin: 8px 0; font-size: .59rem; line-height: 1.45; }
-    .details-actions { gap: 5px; margin-top: 7px; }
-    .details-actions button { min-height: 27px; padding: 5px 7px; font-size: .52rem; }
-
-    /* Currently Reading cards are slightly smaller than Library cards. */
-    #reading-container .book-card {
-        height: 142px;
-        min-height: 142px;
-    }
+    .details-title { font-size: 1.05rem; }
+    .details-author { margin-bottom: 8px; font-size: .58rem; }
+    .details-info { gap: 4px; margin-top: 6px; }
+    .details-info p { font-size: .55rem; line-height: 1.35; }
+    .details-quote { margin: 7px 0; font-size: .58rem; line-height: 1.4; }
+    .details-actions { gap: 4px; margin-top: 6px; }
+    .details-actions button { min-height: 26px; padding: 4px 7px; font-size: .51rem; }
+    .currently-reading { padding: 11px; border-radius: 14px; }
+    .library-content { padding: 11px; border-radius: 14px; }
+    .library-books,
+    #reading-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .book-card { height: 150px; min-height: 150px; padding: 12px 10px 10px 14px; }
+    #reading-container .book-card { height: 142px; min-height: 142px; }
 }
 
-/* Very small phones */
 @media (max-width: 380px) {
+    main > .book-details { width: 60vw; max-width: 235px; min-width: 190px; }
+    main > .book-details .details-book { max-height: 225px; padding: 12px 11px; }
     .currently-reading,
     .library-content { padding: 9px; }
-
     #reading-container,
     .library-books { gap: 7px; }
-
     .book-card,
-    #reading-container .book-card {
-        height: 138px;
-        min-height: 138px;
-        padding: 11px 8px 9px 12px;
-    }
-
-    .book-title { font-size: .8rem; }
-    .book-author { font-size: .53rem; }
-
-    .details-book {
-        max-height: 255px;
-        padding: 13px 12px;
-    }
+    #reading-container .book-card { height: 138px; min-height: 138px; padding: 11px 8px 9px 12px; }
 }
