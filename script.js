@@ -67,19 +67,6 @@ const chartCanvas =
     document.getElementById("reading-chart");
 
 
-/* =========================================================
-   SOUNDS
-========================================================= */
-
-const happySound =
-    new Audio("./sounds/happy.wav");
-
-const dingSound =
-    new Audio("./sounds/ding.wav");
-
-const deleteSound =
-    new Audio("./sounds/delete.wav");
-
 
 /* =========================================================
    STATE
@@ -639,25 +626,6 @@ function formatDate(date) {
 }
 
 
-/* =========================================================
-   PLAY SOUND
-========================================================= */
-
-function playSound(sound) {
-
-    if (!sound) {
-        return;
-    }
-
-
-    sound.currentTime =
-        0;
-
-
-    sound.play()
-        .catch(() => {});
-
-}
 
 /* =========================================================
    STATUS TEXT
@@ -1900,11 +1868,6 @@ function startReading(id) {
     saveLibrary();
 
 
-    playSound(
-        happySound
-    );
-
-
     renderAll();
 
 
@@ -1982,11 +1945,6 @@ function finishReading(id) {
 
 
     saveLibrary();
-
-
-    playSound(
-        happySound
-    );
 
 
     renderAll();
@@ -2825,10 +2783,6 @@ function confirmDelete() {
 
     }
 
-
-    playSound(
-        deleteSound
-    );
 
 
     renderAll();

@@ -375,7 +375,7 @@ dialog::backdrop { background: rgba(25,18,12,.68); backdrop-filter: blur(7px); -
     .main-nav { display: none; }
     #reading-container, #books-container, .library-books { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 9px; }
     .library-page { grid-template-columns: 1fr; }
-    .book-details { position: fixed; top: 50%; left: 50%; width: min(82vw,430px); max-height: 78vh; min-height: 0; transform: translate(-50%,-50%); z-index: 1200; overflow-y: auto; }
+    .book-details { position: fixed; width: min(82vw,430px); max-height: 78vh; min-height: 0; z-index: 1200; overflow-y: auto; }
     .book-details.empty { min-height: 220px; }
     .book-card { height: 175px; min-height: 175px; }
     .hero { min-height: 235px; }
