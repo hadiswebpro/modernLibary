@@ -53,10 +53,6 @@
         });
     }
 
-    function getActiveSection(name) {
-        return sections[name] || null;
-    }
-
     function alignStoryViewer() {
         if (!bookDetails || window.innerWidth <= 850) return;
 
@@ -66,7 +62,15 @@
 
         if (!activeSection) return;
 
-        bookDetails.style.top = `${activeSection.offsetTop}px`;
+        /* Align with the actual glass/content panel, not the section title. */
+        let target = activeSection.querySelector(".currently-reading, .library-page, .reading-stats");
+        if (!target) target = activeSection;
+
+        const mainRect = bookDetails.parentElement.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const top = targetRect.top - mainRect.top;
+
+        bookDetails.style.top = `${Math.max(0, top)}px`;
     }
 
     function refreshCards() {
@@ -122,12 +126,6 @@
         if (event.key === "Escape") closeMenu();
     });
 
-    /* ---------------------------------------------------------
-       SEARCH
-       Search always opens Library first, including when the user
-       is currently on Reading. Filtering is done on rendered cards.
-    --------------------------------------------------------- */
-
     function filterLibraryCards() {
         if (!bookContainer) return;
 
@@ -157,10 +155,7 @@
     }
 
     if (searchInput) {
-        searchInput.addEventListener("input", () => {
-            openLibraryForSearch();
-        });
-
+        searchInput.addEventListener("input", openLibraryForSearch);
         searchInput.addEventListener("keydown", event => {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -176,11 +171,6 @@
         });
     }
 
-    /* ---------------------------------------------------------
-       BOOK CARD STATUS LABELS
-       Library cards now show status beneath the book content.
-    --------------------------------------------------------- */
-
     function addStatusLabels(container) {
         if (!container) return;
 
@@ -194,18 +184,13 @@
             const label = document.createElement("span");
             label.className = `book-status-label book-status-label--${status}`;
             label.textContent = {
-                "reading": "Currently Reading",
-                "read": "Read",
+                reading: "Currently Reading",
+                read: "Read",
                 "not-read": "Not Read"
             }[status];
-
             card.appendChild(label);
         });
     }
-
-    /* ---------------------------------------------------------
-       STORY VIEWER CONTROLS
-    --------------------------------------------------------- */
 
     function enhanceStoryViewer() {
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
@@ -234,9 +219,7 @@
 
     if (bookDetails) {
         const observer = new MutationObserver(() => {
-            if (!bookDetails.classList.contains("empty")) {
-                requestAnimationFrame(enhanceStoryViewer);
-            }
+            if (!bookDetails.classList.contains("empty")) requestAnimationFrame(enhanceStoryViewer);
         });
         observer.observe(bookDetails, { childList: true, subtree: true });
     }
