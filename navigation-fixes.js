@@ -209,26 +209,98 @@
         `;
     }
 
-    /* Public close action used by the Open Story × button. */
     window.closeBookDetails = restoreEmptyStory;
+
+    function addCurrentPageControls() {
+        if (!bookDetails || bookDetails.classList.contains("empty")) return;
+
+        const detailsBook = bookDetails.querySelector(".details-book");
+        if (!detailsBook || detailsBook.querySelector(".details-page-control")) return;
+
+        const status = detailsBook.querySelector(".details-status")?.textContent?.trim();
+        if (status !== "Currently Reading") return;
+
+        const title = detailsBook.querySelector(".details-title")?.textContent?.trim();
+        const authorText = detailsBook.querySelector(".details-author")?.textContent?.trim() || "";
+        const author = authorText.replace(/^by\s+/i, "").trim();
+        if (!title) return;
+
+        const books = JSON.parse(localStorage.getItem("books") || "[]");
+        const book = books.find(item => item.title === title && item.author === author);
+        if (!book) return;
+
+        const control = document.createElement("div");
+        control.className = "details-page-control";
+
+        const label = document.createElement("label");
+        label.textContent = "Page";
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = "0";
+        input.max = String(book.pages);
+        input.value = String(book.currentPage ?? 0);
+        input.setAttribute("aria-label", "Current page");
+
+        const saveButton = document.createElement("button");
+        saveButton.type = "button";
+        saveButton.textContent = "Save";
+
+        saveButton.addEventListener("click", event => {
+            event.stopPropagation();
+
+            const value = Number(input.value);
+            if (!Number.isFinite(value) || value < 0 || value > book.pages) {
+                input.value = String(book.currentPage ?? 0);
+                return;
+            }
+
+            const latestBooks = JSON.parse(localStorage.getItem("books") || "[]");
+            const latestBook = latestBooks.find(item => item.id === book.id);
+            if (!latestBook) return;
+
+            latestBook.currentPage = Math.floor(value);
+            localStorage.setItem("books", JSON.stringify(latestBooks));
+
+            if (typeof window.renderAll === "function") window.renderAll();
+            if (typeof window.openBookDetails === "function") {
+                window.openBookDetails(latestBook.id);
+            }
+        });
+
+        control.append(label, input, saveButton);
+
+        const progress = detailsBook.querySelector(".details-progress");
+        if (progress) {
+            progress.insertAdjacentElement("afterend", control);
+        } else {
+            const actions = detailsBook.querySelector(".details-actions");
+            if (actions) actions.insertAdjacentElement("beforebegin", control);
+            else detailsBook.appendChild(control);
+        }
+    }
 
     function enhanceStoryViewer() {
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
 
         const detailsBook = bookDetails.querySelector(".details-book");
-        if (!detailsBook || detailsBook.querySelector(".details-close")) return;
+        if (!detailsBook) return;
 
-        const close = document.createElement("button");
-        close.type = "button";
-        close.className = "details-close";
-        close.setAttribute("aria-label", "Close story");
-        close.title = "Close story";
-        close.textContent = "×";
-        close.addEventListener("click", event => {
-            event.stopPropagation();
-            restoreEmptyStory();
-        });
-        detailsBook.appendChild(close);
+        if (!detailsBook.querySelector(".details-close")) {
+            const close = document.createElement("button");
+            close.type = "button";
+            close.className = "details-close";
+            close.setAttribute("aria-label", "Close story");
+            close.title = "Close story";
+            close.textContent = "×";
+            close.addEventListener("click", event => {
+                event.stopPropagation();
+                restoreEmptyStory();
+            });
+            detailsBook.appendChild(close);
+        }
+
+        addCurrentPageControls();
     }
 
     if (bookDetails) {
