@@ -1,0 +1,24 @@
+{
+  "name": "Modern Library",
+  "short_name": "Modern Library",
+  "description": "A cozy personal library to manage your books and follow your reading journey",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#2B211B",
+  "theme_color": "#4A3528",
+  "orientation": "portrait-primary",
+
+  "icons": [
+    {
+      "src": "./favicon/android-chrome-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "./favicon/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
