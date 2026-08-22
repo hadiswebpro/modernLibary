@@ -160,11 +160,8 @@
 
     /* =========================================================
        CURRENT PAGE CONTROL
-       The original renderer keeps the live library in its own
-       module scope, so changing only localStorage and then calling
-       renderAll() could immediately overwrite the new page number.
-       Persist first, then reload so every renderer reads the same
-       saved value and recalculates the progress UI from it.
+       Save only the selected book and update the visible UI.
+       The page itself is never reloaded and Book Details stays open.
     ========================================================= */
 
     function addCurrentPageControls() {
@@ -233,17 +230,42 @@
             if (!latestBook) return;
 
             latestBook.currentPage = value;
-
-            if (value >= Number(latestBook.pages) && latestBook.status === "reading") {
-                latestBook.currentPage = Number(latestBook.pages);
-            }
-
             localStorage.setItem("books", JSON.stringify(latestBooks));
 
-            /* Reload from the persisted source of truth. This makes
-               the card, current-page text, and progress bar all use
-               the same updated value immediately. */
-            window.location.reload();
+            /* Keep the live JS library in sync when it is exposed. */
+            const liveBook = Array.isArray(window.myLibrary)
+                ? window.myLibrary.find(item => String(item.id) === String(latestBook.id))
+                : null;
+
+            if (liveBook) liveBook.currentPage = value;
+
+            /* Update the open details card without rebuilding it. */
+            const currentPage = [...detailsBook.querySelectorAll(".details-info p")]
+                .find(el => el.querySelector("strong")?.textContent?.trim().toLowerCase() === "current page")
+                ?.querySelector("span");
+
+            if (currentPage) {
+                currentPage.textContent = `${value} / ${latestBook.pages}`;
+            }
+
+            const percent = latestBook.pages > 0
+                ? Math.min(100, Math.max(0, (value / latestBook.pages) * 100))
+                : 0;
+
+            const progressBar = detailsBook.querySelector(".details-progress-bar");
+            if (progressBar) progressBar.style.width = `${percent}%`;
+
+            const progressText = detailsBook.querySelector(".details-progress-text");
+            if (progressText) progressText.textContent = `${Math.round(percent)}% read`;
+
+            input.value = String(value);
+
+            document.querySelectorAll(
+                `#reading-container [data-id="${CSS.escape(String(latestBook.id))}"], #books-container [data-id="${CSS.escape(String(latestBook.id))}"]`
+            ).forEach(card => {
+                const pageEl = card.querySelector(".reading-page");
+                if (pageEl) pageEl.textContent = `${value} / ${latestBook.pages}`;
+            });
         });
 
         control.append(label, input, saveButton);
