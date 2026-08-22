@@ -1,17 +1,11 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="theme-color" content="#2d1e12">
-
     <meta name="description" content="A cozy personal library for keeping track of your books and reading journey.">
-
     <title>Modern Library</title>
 
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
@@ -26,10 +20,9 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="navigation-fixes.css">
     <link rel="manifest" href="manifest.json">
-
 </head>
-
 <body>
 
 <div class="page-background" aria-hidden="true">
@@ -41,13 +34,9 @@
 
 <header class="site-header">
     <div class="header-inner">
-
         <a href="#currently-reading-section" class="brand" aria-label="Modern Library home">
             <span class="brand-mark">✦</span>
-            <span class="brand-text">
-                <strong>Modern Library</strong>
-                <small>your little reading world</small>
-            </span>
+            <span class="brand-text"><strong>Modern Library</strong><small>your little reading world</small></span>
         </a>
 
         <nav class="main-nav" id="main-nav" aria-label="Main navigation">
@@ -83,7 +72,6 @@
 </section>
 
 <main>
-
     <section class="library-toolbar">
         <div class="search-wrapper">
             <span class="search-icon" aria-hidden="true">⌕</span>
@@ -109,7 +97,6 @@
             <div><span class="section-kicker">Your collection</span><h2>My Library</h2></div>
             <span class="section-number">02</span>
         </div>
-
         <div class="library-page">
             <div class="library-content">
                 <div class="library-header">
@@ -123,13 +110,8 @@
                 <div id="books-container" class="library-books"></div>
                 <p id="library-empty" class="empty-state">Your library is waiting for its first story...</p>
             </div>
-
             <aside id="book-details" class="book-details empty" aria-live="polite">
-                <div class="details-empty-content">
-                    <span class="details-empty-icon">✦</span>
-                    <strong>Open a story</strong>
-                    <p>Select a book from your library to see its details.</p>
-                </div>
+                <div class="details-empty-content"><span class="details-empty-icon">✦</span><strong>Open a story</strong><p>Select a book from your library to see its details.</p></div>
             </aside>
         </div>
     </section>
@@ -193,6 +175,5 @@
 
 <script src="script.js" defer></script>
 <script src="navigation-fixes.js" defer></script>
-
 </body>
 </html>
