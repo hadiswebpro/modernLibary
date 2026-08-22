@@ -158,19 +158,40 @@
 
     window.closeBookDetails = restoreEmptyStory;
 
+    /* =========================================================
+       CURRENT PAGE CONTROL
+       The original renderer keeps the live library in its own
+       module scope, so changing only localStorage and then calling
+       renderAll() could immediately overwrite the new page number.
+       Persist first, then reload so every renderer reads the same
+       saved value and recalculates the progress UI from it.
+    ========================================================= */
+
     function addCurrentPageControls() {
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
+
         const detailsBook = bookDetails.querySelector(".details-book");
         if (!detailsBook || detailsBook.querySelector(".details-page-control")) return;
 
         const status = detailsBook.querySelector(".details-status")?.textContent?.trim();
         if (status !== "Currently Reading") return;
 
+        const bookId = bookDetails.dataset.bookId || detailsBook.dataset.bookId;
         const title = detailsBook.querySelector(".details-title")?.textContent?.trim();
         const authorText = detailsBook.querySelector(".details-author")?.textContent?.trim() || "";
         const author = authorText.replace(/^by\s+/i, "").trim();
-        const books = JSON.parse(localStorage.getItem("books") || "[]");
-        const book = books.find(item => item.title === title && item.author === author);
+
+        let books;
+        try {
+            books = JSON.parse(localStorage.getItem("books") || "[]");
+        } catch {
+            return;
+        }
+
+        const book = bookId
+            ? books.find(item => String(item.id) === String(bookId))
+            : books.find(item => item.title === title && item.author === author);
+
         if (!book) return;
 
         const control = document.createElement("div");
@@ -183,7 +204,7 @@
         input.type = "number";
         input.min = "0";
         input.max = String(book.pages);
-        input.value = String(book.currentPage ?? 0);
+        input.value = String(Number(book.currentPage) || 0);
         input.setAttribute("aria-label", "Current page");
 
         const saveButton = document.createElement("button");
@@ -191,22 +212,42 @@
         saveButton.textContent = "Save";
 
         saveButton.addEventListener("click", event => {
+            event.preventDefault();
             event.stopPropagation();
-            const value = Number(input.value);
-            if (!Number.isFinite(value) || value < 0 || value > book.pages) {
-                input.value = String(book.currentPage ?? 0);
+
+            const value = Math.floor(Number(input.value));
+
+            if (!Number.isFinite(value) || value < 0 || value > Number(book.pages)) {
+                input.value = String(Number(book.currentPage) || 0);
                 return;
             }
-            const latestBooks = JSON.parse(localStorage.getItem("books") || "[]");
-            const latestBook = latestBooks.find(item => item.id === book.id);
+
+            let latestBooks;
+            try {
+                latestBooks = JSON.parse(localStorage.getItem("books") || "[]");
+            } catch {
+                return;
+            }
+
+            const latestBook = latestBooks.find(item => String(item.id) === String(book.id));
             if (!latestBook) return;
-            latestBook.currentPage = Math.floor(value);
+
+            latestBook.currentPage = value;
+
+            if (value >= Number(latestBook.pages) && latestBook.status === "reading") {
+                latestBook.currentPage = Number(latestBook.pages);
+            }
+
             localStorage.setItem("books", JSON.stringify(latestBooks));
-            if (typeof window.renderAll === "function") window.renderAll();
-            if (typeof window.openBookDetails === "function") window.openBookDetails(latestBook.id);
+
+            /* Reload from the persisted source of truth. This makes
+               the card, current-page text, and progress bar all use
+               the same updated value immediately. */
+            window.location.reload();
         });
 
         control.append(label, input, saveButton);
+
         const progress = detailsBook.querySelector(".details-progress");
         if (progress) progress.insertAdjacentElement("afterend", control);
         else {
