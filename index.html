@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#4b3020"
+    >
+
+    <meta
+        name="description"
+        content="Your cozy personal library"
+    >
+
+    <title>Cozy Library</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="16x16" href="./favicon/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./favicon/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="./favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./favicon/android-chrome-512x512.png">
+    <link rel="shortcut icon" href="./favicon/favicon.ico">
+
+ 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Nunito:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+
+    <link
+        rel="manifest"
+        href="manifest.json"
+    >
+
+</head>
+
+
+<body>
+
+
+
+
+<div class="title">
+
+    <h2>
+        Welcome to Your Cozy Library
+    </h2>
+
+</div>
+
+
+
+
+<header>
+
+    <!-- SEARCH -->
+
+    <input
+        id="search-input"
+        type="search"
+        placeholder="Search your books..."
+        autocomplete="off"
+    >
+
+
+    <button
+        id="search-btn"
+        type="button"
+    >
+        Search
+    </button>
+
+
+    <button
+        id="add-btn"
+        type="button"
+    >
+        Add Book
+    </button>
+
+
+    <button
+        id="theme-btn"
+        type="button"
+        aria-label="Toggle theme"
+    >
+        ☾
+    </button>
+
+</header>
+
+
+
+
+
+<main>
+
+
+
+
+    <section
+        class="currently-reading"
+        id="currently-reading-section"
+    >
+
+        <h2>
+            Currently Reading
+        </h2>
+
+
+        <div
+            id="reading-container"
+        >
+
+            <!-- JS inserts reading books here -->
+
+        </div>
+
+
+        <p
+            id="reading-empty"
+            class="empty-message"
+        >
+            Your reading corner is empty...
+        </p>
+
+    </section>
+
+
+
+
+    <section
+        class="my-library"
+        id="library-section"
+    >
+
+        <div class="library-page">
+
+
+         
+
+            <div class="library-content">
+
+
+                <div class="library-header">
+
+                    <h2>
+                        My Library
+                    </h2>
+
+
+                    <div
+                        class="library-filter"
+                        role="group"
+                        aria-label="Library filter"
+                    >
+
+                        <button
+                            class="library-filter-btn active"
+                            data-filter="all"
+                            type="button"
+                        >
+                            All
+                        </button>
+
+
+                        <button
+                            class="library-filter-btn"
+                            data-filter="read"
+                            type="button"
+                        >
+                            Read
+                        </button>
+
+
+                        <button
+                            class="library-filter-btn"
+                            data-filter="not-read"
+                            type="button"
+                        >
+                            Not Read
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- BOOK GRID -->
+
+                <div
+                    id="books-container"
+                    class="library-books"
+                >
+
+                    <!-- JS inserts books here -->
+
+                </div>
+
+
+                <p
+                    id="library-empty"
+                    class="empty-message"
+                >
+                    Your library is waiting for its first story...
+                </p>
+
+            </div>
+
+
+
+            
+
+            <aside
+                id="book-details"
+                class="book-details empty"
+            >
+
+                <div>
+
+                    Select a book to open it.
+
+                </div>
+
+            </aside>
+
+
+        </div>
+
+    </section>
+
+
+
+   
+
+    <section
+        class="reading-stats"
+        id="stats-section"
+    >
+
+
+        <div class="stats-header">
+
+            <h2>
+                Reading Journal
+            </h2>
+
+
+            <div
+                class="stats-filter"
+                role="group"
+                aria-label="Chart filter"
+            >
+
+                <button
+                    class="stats-filter-btn active"
+                    data-period="all"
+                    type="button"
+                >
+                    All
+                </button>
+
+
+                <button
+                    class="stats-filter-btn"
+                    data-period="year"
+                    type="button"
+                >
+                    Year
+                </button>
+
+
+                <button
+                    class="stats-filter-btn"
+                    data-period="month"
+                    type="button"
+                >
+                    Month
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- STAT CARDS -->
+
+        <div class="stats-summary">
+
+
+            <div class="stat-card">
+
+                <span>
+                    Total Books
+                </span>
+
+                <strong
+                    id="total-books"
+                >
+                    0
+                </strong>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <span>
+                    Books Read
+                </span>
+
+                <strong
+                    id="books-read"
+                >
+                    0
+                </strong>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <span>
+                    Currently Reading
+                </span>
+
+                <strong
+                    id="books-reading"
+                >
+                    0
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- CHART -->
+
+        <div class="chart-container">
+
+            <h3>
+                Reading Progress
+            </h3>
+
+
+            <canvas
+                id="reading-chart"
+                width="900"
+                height="300"
+            ></canvas>
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+
+
+<dialog id="bookDialog">
+
+
+    <form
+        id="bookForm"
+        method="dialog"
+    >
+
+
+        <label for="book-title">
+            Book Title
+        </label>
+
+
+        <input
+            id="book-title"
+            name="title"
+            type="text"
+            placeholder="Enter book title"
+            required
+        >
+
+
+
+        <label for="book-author">
+            Author
+        </label>
+
+
+        <input
+            id="book-author"
+            name="author"
+            type="text"
+            placeholder="Enter author name"
+            required
+        >
+
+
+
+        <label for="book-pages">
+            Number of Pages
+        </label>
+
+
+        <input
+            id="book-pages"
+            name="pages"
+            type="number"
+            min="1"
+            placeholder="e.g. 320"
+            required
+        >
+
+
+
+        <label for="book-status">
+            Status
+        </label>
+
+
+        <select
+            id="book-status"
+            name="status"
+            required
+        >
+
+            <option
+                value="not-read"
+            >
+                Not Read
+            </option>
+
+
+            <option
+                value="reading"
+            >
+                Currently Reading
+            </option>
+
+
+            <option
+                value="read"
+            >
+                Read
+            </option>
+
+        </select>
+
+
+
+        <button
+            type="submit"
+            id="submitBtn"
+        >
+            Add Book
+        </button>
+
+
+        <button
+            type="button"
+            id="cancelBtn"
+        >
+            Cancel
+        </button>
+
+
+    </form>
+
+</dialog>
+
+
+
+
+
+<dialog id="deleteDialog">
+
+    <div class="delete-dialog-content">
+
+
+        <h3>
+            Remove this book?
+        </h3>
+
+
+        <p>
+            This little story will be removed
+            from your library.
+        </p>
+
+
+        <div class="delete-dialog-actions">
+
+
+            <button
+                type="button"
+                class="confirm-delete-btn"
+                id="confirmDeleteBtn"
+            >
+                Delete
+            </button>
+
+
+            <button
+                type="button"
+                class="cancel-delete-btn"
+                id="cancelDeleteBtn"
+            >
+                Keep
+            </button>
+
+
+        </div>
+
+    </div>
+
+</dialog>
+
+
+
+
+
+<div
+    id="alert-container"
+    aria-live="polite"
+    aria-atomic="true"
+></div>
+
+
+<script
+    src="script.js"
+    defer
+></script>
+
+
+</body>
+
+</html>
+
