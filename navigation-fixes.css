@@ -1,26 +1,18 @@
 /* =========================================================
-   MODERN LIBRARY — VIEW + RESPONSIVE DETAILS FIXES
+   MODERN LIBRARY — FINAL VIEW + RESPONSIVE DETAILS FIXES
 ========================================================= */
 
-/* Desktop header already contains the three main destinations. */
+/* The desktop header already contains Reading / Library / Journal. */
 .menu-btn { display: none; }
 
-/* Only Currently Reading is visible on the initial Home view. */
-.library-section,
-.stats-section { display: none; }
+/* Only the selected section is visible. Reading is the initial view. */
+.home-section { display: none; }
+.home-section.view-active { display: block; }
 
-/* Anchor-based page views: no extra JS is required. */
-#library-section:target,
-#stats-section:target { display: block; }
-
-body:has(#library-section:target) .currently-reading-section,
-body:has(#stats-section:target) .currently-reading-section { display: none; }
-
-body:has(#library-section:target) .library-section,
-body:has(#stats-section:target) .stats-section { display: block; }
-
-body:has(#library-section:target) .stats-section,
-body:has(#stats-section:target) .library-section { display: none; }
+/* Mobile menu must be able to open. */
+@media (max-width: 850px) {
+    .menu-btn { display: grid; }
+}
 
 /* Library details beside the books on desktop. */
 .library-page {
@@ -40,10 +32,8 @@ body:has(#stats-section:target) .library-section { display: none; }
     min-height: 390px;
 }
 
-/* Tablet/mobile: details becomes a normal block ABOVE the books. */
+/* Tablet/mobile: Open a Book becomes a normal block ABOVE the books. */
 @media (max-width: 850px) {
-    .menu-btn { display: grid; }
-
     .library-page {
         display: flex;
         flex-direction: column;
