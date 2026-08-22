@@ -6,14 +6,15 @@
 
 main { position: relative; }
 
-/* Desktop: content on the left, one fixed book-sized story viewer on the right. */
+/* Desktop: the viewer is a real companion panel, aligned with the
+   glass content panel rather than with the page/header. */
 main > .book-details {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 30;
     width: 350px;
-    height: 380px;
+    height: 450px;
     margin: 0;
 }
 
@@ -33,6 +34,7 @@ main > .book-details:not(.empty) {
 
 main > .book-details.viewer-hidden { display: none !important; }
 
+/* Leave enough room for the viewer without making the main content tiny. */
 main > .home-section.view-active {
     width: calc(100% - 370px);
     margin-right: 370px;
@@ -44,11 +46,11 @@ main > .home-section.view-active {
 main > .book-details .details-book {
     position: relative;
     width: 100%;
-    height: 380px;
+    height: 450px;
     min-height: 0;
-    max-height: 380px;
+    max-height: 450px;
     overflow: hidden;
-    padding: 25px 22px;
+    padding: 28px 23px 22px;
 }
 
 .details-close {
@@ -56,15 +58,15 @@ main > .book-details .details-book {
     top: 10px;
     right: 10px;
     z-index: 8;
-    width: 27px;
-    height: 27px;
+    width: 29px;
+    height: 29px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
     background: rgba(75,48,32,.20);
     color: var(--espresso);
-    font-size: .78rem;
+    font-size: .8rem;
 }
 
 .details-close:hover {
@@ -73,31 +75,31 @@ main > .book-details .details-book {
 }
 
 .details-title {
-    max-width: 270px;
-    margin: 22px auto 5px;
+    max-width: 275px;
+    margin: 28px auto 7px;
     text-align: center;
 }
 
-.details-author { text-align: center; margin-bottom: 13px; }
+.details-author { text-align: center; margin-bottom: 15px; }
 
 .details-status {
     width: fit-content;
-    margin: 0 auto 10px;
-    padding: 4px 8px;
+    margin: 0 auto 12px;
+    padding: 4px 9px;
     color: var(--espresso);
     background: rgba(255,248,232,.30);
     border: 1px solid rgba(75,48,32,.12);
     border-radius: 999px;
-    font-size: .58rem;
+    font-size: .6rem;
 }
 
-.details-info { gap: 7px; margin-top: 8px; }
+.details-info { gap: 8px; margin-top: 9px; }
 .details-info p {
     display: flex;
     justify-content: space-between;
     gap: 10px;
     margin: 0;
-    padding-bottom: 5px;
+    padding-bottom: 6px;
     border-bottom: 1px solid rgba(75,48,32,.10);
 }
 .details-info strong { flex: 0 0 auto; }
@@ -108,38 +110,38 @@ main > .book-details .details-book {
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 8px;
-    margin-top: 7px;
+    margin-top: 9px;
 }
 .details-progress-track { height: 7px; overflow: hidden; background: rgba(75,48,32,.16); border-radius: 999px; }
 .details-progress-bar { height: 100%; background: linear-gradient(90deg, var(--forest), var(--sage)); border-radius: inherit; }
-.details-progress-text { color: var(--espresso); font-size: .58rem; font-weight: 700; white-space: nowrap; }
+.details-progress-text { color: var(--espresso); font-size: .6rem; font-weight: 700; white-space: nowrap; }
 
 .details-page-control {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    margin-top: 9px;
+    gap: 7px;
+    margin-top: 10px;
 }
-.details-page-control label { color: var(--espresso); font-size: .58rem; font-weight: 700; }
+.details-page-control label { color: var(--espresso); font-size: .6rem; font-weight: 700; }
 .details-page-control input {
-    width: 58px;
-    height: 28px;
+    width: 60px;
+    height: 29px;
     padding: 4px 6px;
     color: var(--text);
     background: rgba(255,250,235,.70);
     border: 1px solid rgba(75,48,32,.18);
     border-radius: 7px;
     outline: 0;
-    font-size: .62rem;
+    font-size: .63rem;
     text-align: center;
 }
-.details-page-control button { min-height: 28px; padding: 5px 8px; color: var(--white); background: var(--forest); border-radius: 7px; font-size: .56rem; }
+.details-page-control button { min-height: 29px; padding: 5px 9px; color: var(--white); background: var(--forest); border-radius: 7px; font-size: .57rem; }
 .details-page-control button:hover { background: var(--coffee); }
 
-.details-quote { margin: 13px 0 10px; font-size: .70rem; line-height: 1.45; }
-.details-actions { gap: 5px; margin-top: 8px; }
-.details-actions button { min-height: 28px; padding: 5px 8px; font-size: .56rem; }
+.details-quote { margin: 15px 0 11px; font-size: .72rem; line-height: 1.5; }
+.details-actions { gap: 6px; margin-top: 9px; }
+.details-actions button { min-height: 29px; padding: 5px 9px; font-size: .57rem; }
 
 /* Library card status */
 .book-card .book-info {
@@ -168,17 +170,18 @@ main > .book-details .details-book {
 .book-status-label--read { color: var(--espresso); background: rgba(217,184,106,.20); }
 .book-status-label--not-read { color: var(--wood); background: rgba(75,48,32,.10); }
 
-/* Tablet/mobile: two separate stacked boxes with generous gap. */
+/* Tablet/mobile: viewer becomes its own centered panel ABOVE the active
+   Reading/Library glass panel. It never shares the books grid. */
 @media (max-width: 850px) {
     main > .book-details {
         position: relative;
         top: auto !important;
         right: auto;
-        width: min(60vw, 300px);
-        min-width: 205px;
+        width: min(68vw, 320px);
+        min-width: 215px;
         height: auto;
-        min-height: 70px;
-        margin: 0 auto 34px;
+        min-height: 76px;
+        margin: 0 auto 44px;
     }
 
     main > .home-section.view-active {
@@ -186,68 +189,82 @@ main > .book-details .details-book {
         margin-right: 0;
     }
 
-    main > .book-details.empty { min-height: 70px; height: 70px; padding: 11px; }
+    main > .book-details.empty {
+        min-height: 76px;
+        height: 76px;
+        padding: 12px;
+    }
 
     main > .book-details .details-book {
         width: 100%;
-        height: 300px;
-        min-height: 0;
-        max-height: 300px;
+        height: 340px;
+        min-height: 340px;
+        max-height: 340px;
         overflow: hidden;
-        padding: 18px 16px;
+        padding: 20px 17px;
     }
 
-    .details-title { max-width: 90%; margin-top: 19px; font-size: 1.08rem; }
-    .details-author { font-size: .60rem; margin-bottom: 8px; }
-    .details-status { margin-bottom: 7px; font-size: .52rem; }
-    .details-info { gap: 4px; }
-    .details-info p { padding-bottom: 3px; font-size: .55rem; line-height: 1.25; }
-    .details-progress { margin-top: 5px; }
-    .details-progress-text { font-size: .52rem; }
-    .details-page-control { margin-top: 6px; }
-    .details-quote { margin: 7px 0; font-size: .56rem; line-height: 1.3; }
-    .details-actions { margin-top: 5px; }
-    .details-actions button { min-height: 25px; padding: 4px 6px; font-size: .50rem; }
+    .details-title { max-width: 90%; margin-top: 22px; font-size: 1.16rem; }
+    .details-author { font-size: .64rem; margin-bottom: 10px; }
+    .details-status { margin-bottom: 9px; font-size: .55rem; }
+    .details-info { gap: 5px; }
+    .details-info p { padding-bottom: 4px; font-size: .58rem; line-height: 1.3; }
+    .details-progress { margin-top: 7px; }
+    .details-progress-text { font-size: .55rem; }
+    .details-page-control { margin-top: 8px; }
+    .details-quote { margin: 9px 0 7px; font-size: .60rem; line-height: 1.4; }
+    .details-actions { margin-top: 7px; }
+    .details-actions button { min-height: 27px; padding: 4px 7px; font-size: .52rem; }
 
     .book-status-label { margin-top: 5px; padding: 3px 7px; font-size: .49rem; }
 }
 
 @media (max-width: 600px) {
     main > .book-details {
-        width: 60vw;
-        max-width: 260px;
-        min-width: 205px;
-        margin-bottom: 38px;
+        width: min(68vw, 285px);
+        min-width: 210px;
+        margin-bottom: 46px;
     }
 
-    main > .book-details.empty { min-height: 66px; height: 66px; }
+    main > .book-details.empty { min-height: 70px; height: 70px; }
 
     main > .book-details .details-book {
-        height: 265px;
-        max-height: 265px;
-        padding: 14px 13px;
+        height: 315px;
+        min-height: 315px;
+        max-height: 315px;
+        padding: 17px 15px;
     }
 
-    .details-close { top: 7px; right: 7px; width: 24px; height: 24px; font-size: .68rem; }
-    .details-title { font-size: 1rem; }
-    .details-author { font-size: .55rem; }
-    .details-info p { font-size: .51rem; }
-    .details-page-control label { font-size: .52rem; }
-    .details-page-control input { width: 52px; height: 25px; font-size: .55rem; }
-    .details-page-control button { min-height: 25px; font-size: .50rem; }
-    .details-quote { font-size: .53rem; }
-    .details-actions button { font-size: .48rem; }
+    .details-close { top: 7px; right: 7px; width: 25px; height: 25px; font-size: .7rem; }
+    .details-title { margin-top: 21px; font-size: 1.05rem; }
+    .details-author { font-size: .58rem; }
+    .details-info p { font-size: .54rem; }
+    .details-page-control label { font-size: .54rem; }
+    .details-page-control input { width: 54px; height: 26px; font-size: .57rem; }
+    .details-page-control button { min-height: 26px; font-size: .52rem; }
+    .details-quote { font-size: .56rem; }
+    .details-actions button { font-size: .50rem; }
     .book-card .book-title { font-size: .88rem; }
     .book-card .book-author { font-size: .56rem; }
     .book-card .reading-page { font-size: .58rem; }
 }
 
 @media (max-width: 380px) {
-    main > .book-details { width: 60vw; max-width: 235px; min-width: 190px; }
-    main > .book-details .details-book { height: 250px; max-height: 250px; padding: 12px 11px; }
-    .details-title { font-size: .92rem; }
-    .details-info p { font-size: .48rem; }
-    .details-quote { font-size: .50rem; }
+    main > .book-details {
+        width: min(70vw, 255px);
+        min-width: 195px;
+    }
+
+    main > .book-details .details-book {
+        height: 300px;
+        min-height: 300px;
+        max-height: 300px;
+        padding: 15px 13px;
+    }
+
+    .details-title { font-size: .98rem; }
+    .details-info p { font-size: .51rem; }
+    .details-quote { font-size: .53rem; }
     .book-card .book-title { font-size: .80rem; }
     .book-card .book-author { font-size: .52rem; }
     .book-card .reading-page { font-size: .54rem; }
