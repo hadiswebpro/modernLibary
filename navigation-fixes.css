@@ -1,18 +1,25 @@
-/* MODERN LIBRARY — SHARED BOOK VIEWER + RESPONSIVE LAYOUT */
+/* MODERN LIBRARY — SHARED STORY VIEWER */
+
 .home-section { display: none; }
 .home-section.view-active { display: block; }
-.menu-btn { display: none; }
 
-/* One shared Open a Story viewer for every section. */
+/* The viewer is a sibling of the active section: right on desktop, above books on mobile. */
+main { position: relative; }
 main > .book-details {
-    position: sticky;
-    top: 88px;
-    z-index: 20;
-    width: min(330px, 100%);
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 30;
+    width: 350px;
     min-height: 0;
-    margin: 0 0 18px auto;
+    margin: 0;
 }
-main > .book-details.empty { min-height: 92px; padding: 18px; }
+
+main > .book-details.empty {
+    min-height: 92px;
+    padding: 16px;
+}
+
 main > .book-details:not(.empty) {
     padding: 0;
     background: transparent;
@@ -20,84 +27,240 @@ main > .book-details:not(.empty) {
     box-shadow: none;
     overflow: visible;
 }
-main > .book-details .details-book { width: 100%; min-height: 350px; }
 
-/* Library no longer owns the viewer. */
+/* Keep the active section and its viewer aligned from the same top edge. */
+main > .home-section.view-active {
+    width: calc(100% - 370px);
+    margin-right: 370px;
+}
+
+/* The old Library-specific split is intentionally gone. */
 .library-page { display: block; }
 .library-content { width: 100%; min-width: 0; }
 
-/* Desktop / landscape: shared viewer stays on the right. */
-@media (min-width: 851px) {
-    main > .book-details { float: right; margin-left: 18px; }
+/* Story card: preserve the original book-like look, but keep everything visible. */
+main > .book-details .details-book {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    max-height: none;
+    overflow: visible;
+    padding: 25px 22px;
 }
 
-/* Tablet / mobile: shared viewer is above the active books. */
+.details-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 8;
+    width: 27px;
+    height: 27px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(75,48,32,.20);
+    color: var(--espresso);
+    font-size: .78rem;
+}
+
+.details-close:hover {
+    background: rgba(160,68,55,.18);
+    color: var(--danger);
+}
+
+.details-title {
+    max-width: 270px;
+    margin: 22px auto 5px;
+    text-align: center;
+}
+
+.details-author {
+    text-align: center;
+    margin-bottom: 13px;
+}
+
+.details-status {
+    width: fit-content;
+    margin: 0 auto 10px;
+    padding: 4px 8px;
+    color: var(--espresso);
+    background: rgba(255,248,232,.30);
+    border: 1px solid rgba(75,48,32,.12);
+    border-radius: 999px;
+    font-size: .58rem;
+}
+
+.details-info {
+    gap: 7px;
+    margin-top: 8px;
+}
+
+.details-info p {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(75,48,32,.10);
+}
+
+.details-info strong { flex: 0 0 auto; }
+.details-info span { text-align: right; }
+
+.details-progress {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    margin-top: 7px;
+}
+
+.details-progress-track {
+    height: 7px;
+    overflow: hidden;
+    background: rgba(75,48,32,.16);
+    border-radius: 999px;
+}
+
+.details-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--forest), var(--sage));
+    border-radius: inherit;
+}
+
+.details-progress-text {
+    color: var(--espresso);
+    font-size: .58rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.details-page-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 9px;
+}
+
+.details-page-control label {
+    color: var(--espresso);
+    font-size: .58rem;
+    font-weight: 700;
+}
+
+.details-page-control input {
+    width: 58px;
+    height: 28px;
+    padding: 4px 6px;
+    color: var(--text);
+    background: rgba(255,250,235,.70);
+    border: 1px solid rgba(75,48,32,.18);
+    border-radius: 7px;
+    outline: 0;
+    font-size: .62rem;
+    text-align: center;
+}
+
+.details-page-control button {
+    min-height: 28px;
+    padding: 5px 8px;
+    color: var(--white);
+    background: var(--forest);
+    border-radius: 7px;
+    font-size: .56rem;
+}
+
+.details-page-control button:hover { background: var(--coffee); }
+
+.details-quote {
+    margin: 13px 0 10px;
+    font-size: .70rem;
+    line-height: 1.45;
+}
+
+.details-actions {
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.details-actions button {
+    min-height: 28px;
+    padding: 5px 8px;
+    font-size: .56rem;
+}
+
+/* Mobile / tablet: the story viewer becomes a small book-sized card below search. */
 @media (max-width: 850px) {
-    .menu-btn { display: grid; }
     main > .book-details {
         position: relative;
         top: auto;
-        float: none;
-        clear: both;
+        right: auto;
         width: min(60vw, 300px);
+        min-width: 205px;
         min-height: 72px;
-        margin: 0 auto 14px;
+        margin: 0 auto 15px;
     }
-    main > .book-details.empty { min-height: 72px; padding: 12px; }
-    main > .book-details:not(.empty) { padding: 0; }
+
+    main > .home-section.view-active {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    main > .book-details.empty { min-height: 70px; padding: 11px; }
+
     main > .book-details .details-book {
         width: 100%;
         min-height: 0;
-        max-height: 320px;
+        max-height: 300px;
+        overflow: hidden;
         padding: 18px 16px;
-        overflow-y: auto;
     }
-    .library-books,
-    #reading-container {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 9px;
-    }
-    .book-card { height: 155px; min-height: 155px; padding: 13px 11px 11px 15px; }
+
+    .details-title { max-width: 90%; margin-top: 19px; font-size: 1.08rem; }
+    .details-author { font-size: .60rem; margin-bottom: 8px; }
+    .details-status { margin-bottom: 7px; font-size: .52rem; }
+    .details-info { gap: 4px; }
+    .details-info p { padding-bottom: 3px; font-size: .55rem; line-height: 1.25; }
+    .details-progress { margin-top: 5px; }
+    .details-progress-text { font-size: .52rem; }
+    .details-page-control { margin-top: 6px; }
+    .details-quote { margin: 7px 0; font-size: .56rem; line-height: 1.3; }
+    .details-actions { margin-top: 5px; }
+    .details-actions button { min-height: 25px; padding: 4px 6px; font-size: .50rem; }
 }
 
-/* Mobile: small book-sized viewer with visible background around it. */
 @media (max-width: 600px) {
     main > .book-details {
         width: 60vw;
         max-width: 260px;
         min-width: 205px;
-        margin: 0 auto 12px;
-        border-radius: 14px;
+        margin-bottom: 12px;
     }
-    main > .book-details.empty { min-height: 66px; padding: 10px; }
+
+    main > .book-details.empty { min-height: 66px; }
+
     main > .book-details .details-book {
-        max-height: 245px;
-        min-height: 0;
+        max-height: 265px;
         padding: 14px 13px;
-        border-radius: 7px 13px 13px 7px;
     }
-    .details-title { font-size: 1.05rem; }
-    .details-author { margin-bottom: 8px; font-size: .58rem; }
-    .details-info { gap: 4px; margin-top: 6px; }
-    .details-info p { font-size: .55rem; line-height: 1.35; }
-    .details-quote { margin: 7px 0; font-size: .58rem; line-height: 1.4; }
-    .details-actions { gap: 4px; margin-top: 6px; }
-    .details-actions button { min-height: 26px; padding: 4px 7px; font-size: .51rem; }
-    .currently-reading { padding: 11px; border-radius: 14px; }
-    .library-content { padding: 11px; border-radius: 14px; }
-    .library-books,
-    #reading-container { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-    .book-card { height: 150px; min-height: 150px; padding: 12px 10px 10px 14px; }
-    #reading-container .book-card { height: 142px; min-height: 142px; }
+
+    .details-close { top: 7px; right: 7px; width: 24px; height: 24px; font-size: .68rem; }
+    .details-title { font-size: 1rem; }
+    .details-author { font-size: .55rem; }
+    .details-info p { font-size: .51rem; }
+    .details-page-control label { font-size: .52rem; }
+    .details-page-control input { width: 52px; height: 25px; font-size: .55rem; }
+    .details-page-control button { min-height: 25px; font-size: .50rem; }
+    .details-quote { font-size: .53rem; }
+    .details-actions button { font-size: .48rem; }
 }
 
 @media (max-width: 380px) {
     main > .book-details { width: 60vw; max-width: 235px; min-width: 190px; }
-    main > .book-details .details-book { max-height: 225px; padding: 12px 11px; }
-    .currently-reading,
-    .library-content { padding: 9px; }
-    #reading-container,
-    .library-books { gap: 7px; }
-    .book-card,
-    #reading-container .book-card { height: 138px; min-height: 138px; padding: 11px 8px 9px 12px; }
+    main > .book-details .details-book { max-height: 250px; padding: 12px 11px; }
+    .details-title { font-size: .92rem; }
+    .details-info p { font-size: .48rem; }
+    .details-quote { font-size: .50rem; }
 }
