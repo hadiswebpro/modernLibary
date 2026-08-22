@@ -1,4 +1,4 @@
-/* Responsive Book Details — intentionally limited to the requested viewer fix. */
+/* Responsive Book Details — keep the desktop card language and controls on narrow screens. */
 @media (max-width: 850px) {
     .book-details {
         position: fixed;
@@ -9,7 +9,6 @@
         overflow-y: auto;
     }
 
-    /* Keep the existing book/detail controls styled on narrow screens. */
     .book-details button,
     .details-page-control button,
     .details-actions button {
@@ -23,6 +22,18 @@
         font-size: .64rem;
         font-weight: 700;
         cursor: pointer;
+    }
+
+    .details-page-control input {
+        width: 72px;
+        min-height: 31px;
+        padding: 7px 8px;
+        color: var(--text);
+        background: var(--paper);
+        border: 1px solid var(--paper-dark);
+        border-radius: 7px;
+        font-size: .65rem;
+        box-sizing: border-box;
     }
 
     .details-page-control button,
@@ -40,6 +51,61 @@
     .details-actions .delete-btn {
         color: var(--paper);
         background: var(--danger);
+    }
+
+    /* Keep book cards visually consistent with desktop: title, author,
+       then status/page information rather than replacing the card layout. */
+    .book-card {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-info {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+    }
+
+    .book-title {
+        font-family: 'DM Serif Display', Georgia, serif;
+        font-weight: 400;
+    }
+
+    .book-author {
+        font-style: italic;
+    }
+
+    .reading-page,
+    .book-status-label {
+        font-family: 'Nunito', Arial, sans-serif;
+    }
+
+    .book-status-label {
+        display: block;
+        margin-top: auto;
+        padding-top: 7px;
+        font-size: .58rem;
+        font-weight: 700;
+        line-height: 1.25;
+    }
+
+    .details-progress {
+        display: grid;
+        gap: 6px;
+    }
+
+    .details-progress-track {
+        width: 100%;
+        height: 7px;
+        overflow: hidden;
+        background: rgba(75,48,32,.16);
+        border-radius: 999px;
+    }
+
+    .details-progress-bar {
+        height: 100%;
+        border-radius: inherit;
+        transition: width .35s ease;
     }
 
     .book-details button:hover {
