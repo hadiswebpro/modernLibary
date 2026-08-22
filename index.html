@@ -81,6 +81,11 @@
         <button id="add-btn" class="primary-btn" type="button"><span aria-hidden="true">+</span> Add Book</button>
     </section>
 
+    <!-- Shared book viewer: stays mounted while Reading / Library / Journal views change. -->
+    <aside id="book-details" class="book-details empty" aria-live="polite">
+        <div class="details-empty-content"><span class="details-empty-icon">✦</span><strong>Open a story</strong><p>Select a book from Reading or Library to see its details.</p></div>
+    </aside>
+
     <section class="home-section currently-reading-section view-active" id="currently-reading-section">
         <div class="home-section-header">
             <div><span class="section-kicker">Right now</span><h2>Currently Reading</h2></div>
@@ -110,9 +115,6 @@
                 <div id="books-container" class="library-books"></div>
                 <p id="library-empty" class="empty-state">Your library is waiting for its first story...</p>
             </div>
-            <aside id="book-details" class="book-details empty" aria-live="polite">
-                <div class="details-empty-content"><span class="details-empty-icon">✦</span><strong>Open a story</strong><p>Select a book from your library to see its details.</p></div>
-            </aside>
         </div>
     </section>
 
