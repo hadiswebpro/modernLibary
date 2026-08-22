@@ -1,0 +1,351 @@
+/* =========================================================
+   MODERN LIBRARY — FINAL UI OVERRIDES
+========================================================= */
+
+:root {
+    --bg-dark: #24170f;
+    --bg-brown: #4b3020;
+    --paper: #faf2df;
+    --paper-soft: rgba(250, 242, 223, .14);
+    --gold: #d9b86a;
+    --gold-soft: rgba(217, 184, 106, .18);
+    --forest: #315b3b;
+    --forest-light: #4c7a55;
+    --text: #2d2119;
+    --text-light: #806b58;
+}
+
+html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: "Nunito", sans-serif;
+    color: var(--paper);
+    background-color: var(--bg-dark);
+    background-image:
+        linear-gradient(rgba(35, 22, 12, .48), rgba(35, 22, 12, .62)),
+        url("./images/library-bg.webp");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+body.dark-mode {
+    background-image:
+        linear-gradient(rgba(12, 8, 5, .68), rgba(12, 8, 5, .78)),
+        url("./images/library-bg.webp");
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* =========================================================
+   TOP NAVIGATION
+========================================================= */
+
+.main-nav {
+    position: relative;
+    z-index: 1000;
+    width: min(1400px, 92%);
+    margin: 22px auto 0;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(39, 25, 16, .72);
+    border: 1px solid rgba(255, 248, 232, .14);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.24);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.nav-brand {
+    min-width: 0;
+    color: var(--paper);
+    font-family: "DM Serif Display", Georgia, serif;
+    font-size: 1.25rem;
+    white-space: nowrap;
+}
+
+.nav-brand span {
+    color: var(--gold);
+    font-family: "Brush Script MT", "Segoe Script", cursive;
+    font-size: 1.1rem;
+}
+
+.menu-btn {
+    width: 40px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,248,232,.14);
+    border-radius: 10px;
+    background: rgba(255,248,232,.08);
+    color: var(--paper);
+    font-size: 1.1rem;
+}
+
+.menu-btn:hover {
+    color: var(--gold);
+    background: var(--gold-soft);
+    transform: translateY(-1px);
+}
+
+.menu-panel {
+    position: absolute;
+    top: calc(100% + 9px);
+    right: 10px;
+    z-index: 1100;
+    width: 205px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-7px) scale(.98);
+    transform-origin: top right;
+    background: rgba(39, 25, 16, .96);
+    border: 1px solid rgba(217,184,106,.25);
+    border-radius: 14px;
+    box-shadow: 0 22px 55px rgba(0,0,0,.36);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: opacity .22s ease, transform .22s ease, visibility .22s ease;
+}
+
+.menu-panel.open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.menu-panel button,
+.menu-panel a {
+    width: 100%;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    padding: 8px 11px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: rgba(255,248,232,.84);
+    text-decoration: none;
+    text-align: left;
+    font-size: .72rem;
+}
+
+.menu-panel button:hover,
+.menu-panel a:hover,
+.menu-panel [data-page].active {
+    color: var(--gold);
+    background: rgba(217,184,106,.13);
+    transform: none;
+}
+
+/* =========================================================
+   HERO / SEARCH
+========================================================= */
+
+.welcome {
+    width: min(1400px, 92%);
+    margin: 0 auto;
+    padding: 54px 0 30px;
+    text-align: center;
+}
+
+.welcome h1 {
+    margin: 0;
+    color: var(--paper);
+    font-family: "DM Serif Display", Georgia, serif;
+    font-size: clamp(2.3rem, 5vw, 4.4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    text-shadow: 0 5px 18px rgba(0,0,0,.42);
+}
+
+.welcome-script {
+    margin: 8px 0 0;
+    color: var(--gold);
+    font-family: "Brush Script MT", "Segoe Script", cursive;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+}
+
+.action-bar {
+    width: min(1000px, 92%);
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 600px;
+    display: flex;
+    gap: 7px;
+}
+
+#search-input {
+    min-width: 0;
+    flex: 1;
+    height: 40px;
+    padding: 0 13px;
+    border: 1px solid rgba(215,197,163,.55);
+    border-radius: 10px;
+    outline: none;
+    background: rgba(250,242,223,.9);
+    color: var(--text);
+}
+
+#search-input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(217,184,106,.14);
+}
+
+.search-btn,
+.add-book-btn,
+.theme-btn {
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,248,232,.13);
+}
+
+.search-btn {
+    padding: 0 15px;
+    background: var(--forest);
+    color: #fff;
+}
+
+.search-btn:hover { background: var(--forest-light); }
+
+.add-book-btn {
+    padding: 0 15px;
+    background: rgba(75,48,32,.82);
+    color: var(--gold);
+}
+
+.add-book-btn:hover { background: rgba(75,48,32,.98); }
+
+.theme-btn {
+    width: 40px;
+    flex-shrink: 0;
+    background: rgba(255,248,232,.1);
+    color: var(--paper);
+}
+
+/* =========================================================
+   PAGE SYSTEM
+========================================================= */
+
+.app-page {
+    display: none;
+}
+
+.app-page.active {
+    display: block;
+    animation: pageIn .3s ease;
+}
+
+@keyframes pageIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.page-heading {
+    margin: 0 0 18px;
+    color: var(--paper);
+    font-family: "DM Serif Display", Georgia, serif;
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    font-weight: 400;
+}
+
+.section-script-title {
+    color: var(--gold);
+    font-family: "Brush Script MT", "Segoe Script", cursive;
+    font-size: 2rem;
+}
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+body.dark-mode .currently-reading,
+body.dark-mode .library-content,
+body.dark-mode .reading-stats,
+body.dark-mode .book-details {
+    background: rgba(18, 12, 8, .62);
+}
+
+body.dark-mode #search-input,
+body.dark-mode dialog #bookForm,
+body.dark-mode .delete-dialog-content {
+    background: #24170f;
+    color: var(--paper);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+    body { background-attachment: scroll; }
+
+    .main-nav,
+    .welcome,
+    main { width: 94%; }
+
+    .main-nav { margin-top: 12px; }
+
+    .nav-brand { font-size: 1.05rem; }
+
+    .welcome { padding: 38px 0 22px; }
+
+    .action-bar {
+        width: 94%;
+        flex-wrap: wrap;
+    }
+
+    .search-box { width: 100%; max-width: none; }
+
+    .add-book-btn { flex: 1; }
+
+    .menu-panel {
+        right: 4px;
+        width: min(220px, calc(100vw - 38px));
+    }
+}
+
+@media (max-width: 420px) {
+    .welcome h1 { font-size: 2.15rem; }
+    .welcome-script { font-size: 1.45rem; }
+    .action-bar { gap: 6px; }
+    .search-btn { padding: 0 11px; }
+    .add-book-btn { padding: 0 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
