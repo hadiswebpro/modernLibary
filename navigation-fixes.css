@@ -6,18 +6,20 @@
 
 main { position: relative; }
 
+/* Desktop: content on the left, one fixed book-sized story viewer on the right. */
 main > .book-details {
     position: absolute;
     top: 0;
     right: 0;
     z-index: 30;
     width: 350px;
-    min-height: 0;
+    height: 380px;
     margin: 0;
 }
 
 main > .book-details.empty {
     min-height: 92px;
+    height: 92px;
     padding: 16px;
 }
 
@@ -42,9 +44,10 @@ main > .home-section.view-active {
 main > .book-details .details-book {
     position: relative;
     width: 100%;
-    min-height: 380px;
-    max-height: none;
-    overflow: visible;
+    height: 380px;
+    min-height: 0;
+    max-height: 380px;
+    overflow: hidden;
     padding: 25px 22px;
 }
 
@@ -75,10 +78,7 @@ main > .book-details .details-book {
     text-align: center;
 }
 
-.details-author {
-    text-align: center;
-    margin-bottom: 13px;
-}
+.details-author { text-align: center; margin-bottom: 13px; }
 
 .details-status {
     width: fit-content;
@@ -91,11 +91,7 @@ main > .book-details .details-book {
     font-size: .58rem;
 }
 
-.details-info {
-    gap: 7px;
-    margin-top: 8px;
-}
-
+.details-info { gap: 7px; margin-top: 8px; }
 .details-info p {
     display: flex;
     justify-content: space-between;
@@ -104,7 +100,6 @@ main > .book-details .details-book {
     padding-bottom: 5px;
     border-bottom: 1px solid rgba(75,48,32,.10);
 }
-
 .details-info strong { flex: 0 0 auto; }
 .details-info span { text-align: right; }
 
@@ -115,26 +110,9 @@ main > .book-details .details-book {
     gap: 8px;
     margin-top: 7px;
 }
-
-.details-progress-track {
-    height: 7px;
-    overflow: hidden;
-    background: rgba(75,48,32,.16);
-    border-radius: 999px;
-}
-
-.details-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--forest), var(--sage));
-    border-radius: inherit;
-}
-
-.details-progress-text {
-    color: var(--espresso);
-    font-size: .58rem;
-    font-weight: 700;
-    white-space: nowrap;
-}
+.details-progress-track { height: 7px; overflow: hidden; background: rgba(75,48,32,.16); border-radius: 999px; }
+.details-progress-bar { height: 100%; background: linear-gradient(90deg, var(--forest), var(--sage)); border-radius: inherit; }
+.details-progress-text { color: var(--espresso); font-size: .58rem; font-weight: 700; white-space: nowrap; }
 
 .details-page-control {
     display: flex;
@@ -143,13 +121,7 @@ main > .book-details .details-book {
     gap: 6px;
     margin-top: 9px;
 }
-
-.details-page-control label {
-    color: var(--espresso);
-    font-size: .58rem;
-    font-weight: 700;
-}
-
+.details-page-control label { color: var(--espresso); font-size: .58rem; font-weight: 700; }
 .details-page-control input {
     width: 58px;
     height: 28px;
@@ -162,61 +134,41 @@ main > .book-details .details-book {
     font-size: .62rem;
     text-align: center;
 }
-
-.details-page-control button {
-    min-height: 28px;
-    padding: 5px 8px;
-    color: var(--white);
-    background: var(--forest);
-    border-radius: 7px;
-    font-size: .56rem;
-}
-
+.details-page-control button { min-height: 28px; padding: 5px 8px; color: var(--white); background: var(--forest); border-radius: 7px; font-size: .56rem; }
 .details-page-control button:hover { background: var(--coffee); }
 
-.details-quote {
-    margin: 13px 0 10px;
-    font-size: .70rem;
-    line-height: 1.45;
-}
+.details-quote { margin: 13px 0 10px; font-size: .70rem; line-height: 1.45; }
+.details-actions { gap: 5px; margin-top: 8px; }
+.details-actions button { min-height: 28px; padding: 5px 8px; font-size: .56rem; }
 
-.details-actions {
-    gap: 5px;
-    margin-top: 8px;
-}
-
-.details-actions button {
-    min-height: 28px;
-    padding: 5px 8px;
-    font-size: .56rem;
-}
-
-/* Make book cards feel like small real books. */
+/* Library card status */
 .book-card .book-info {
     display: flex;
     flex-direction: column;
     height: 100%;
     text-align: center;
 }
+.book-card .book-title { margin-top: 5px; text-align: center; }
+.book-card .book-author { text-align: center; }
+.book-card .reading-page { margin-top: auto; padding-top: 8px; text-align: center; font-size: .66rem; font-weight: 700; }
 
-.book-card .book-title {
-    margin-top: 5px;
-    text-align: center;
-}
-
-.book-card .book-author {
-    text-align: center;
-}
-
-.book-card .reading-page {
-    margin-top: auto;
-    padding-top: 8px;
-    text-align: center;
-    font-size: .66rem;
+.book-status-label {
+    display: block;
+    width: fit-content;
+    max-width: 90%;
+    margin: 7px auto 0;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: .53rem;
     font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
 }
+.book-status-label--reading { color: var(--forest); background: rgba(49,91,59,.12); }
+.book-status-label--read { color: var(--espresso); background: rgba(217,184,106,.20); }
+.book-status-label--not-read { color: var(--wood); background: rgba(75,48,32,.10); }
 
-/* Mobile / tablet: small book-sized viewer directly below the search bar. */
+/* Tablet/mobile: two separate stacked boxes with generous gap. */
 @media (max-width: 850px) {
     main > .book-details {
         position: relative;
@@ -224,8 +176,9 @@ main > .book-details .details-book {
         right: auto;
         width: min(60vw, 300px);
         min-width: 205px;
-        min-height: 72px;
-        margin: 0 auto 15px;
+        height: auto;
+        min-height: 70px;
+        margin: 0 auto 34px;
     }
 
     main > .home-section.view-active {
@@ -233,10 +186,11 @@ main > .book-details .details-book {
         margin-right: 0;
     }
 
-    main > .book-details.empty { min-height: 70px; padding: 11px; }
+    main > .book-details.empty { min-height: 70px; height: 70px; padding: 11px; }
 
     main > .book-details .details-book {
         width: 100%;
+        height: 300px;
         min-height: 0;
         max-height: 300px;
         overflow: hidden;
@@ -254,6 +208,8 @@ main > .book-details .details-book {
     .details-quote { margin: 7px 0; font-size: .56rem; line-height: 1.3; }
     .details-actions { margin-top: 5px; }
     .details-actions button { min-height: 25px; padding: 4px 6px; font-size: .50rem; }
+
+    .book-status-label { margin-top: 5px; padding: 3px 7px; font-size: .49rem; }
 }
 
 @media (max-width: 600px) {
@@ -261,12 +217,13 @@ main > .book-details .details-book {
         width: 60vw;
         max-width: 260px;
         min-width: 205px;
-        margin-bottom: 12px;
+        margin-bottom: 38px;
     }
 
-    main > .book-details.empty { min-height: 66px; }
+    main > .book-details.empty { min-height: 66px; height: 66px; }
 
     main > .book-details .details-book {
+        height: 265px;
         max-height: 265px;
         padding: 14px 13px;
     }
@@ -280,7 +237,6 @@ main > .book-details .details-book {
     .details-page-control button { min-height: 25px; font-size: .50rem; }
     .details-quote { font-size: .53rem; }
     .details-actions button { font-size: .48rem; }
-
     .book-card .book-title { font-size: .88rem; }
     .book-card .book-author { font-size: .56rem; }
     .book-card .reading-page { font-size: .58rem; }
@@ -288,7 +244,7 @@ main > .book-details .details-book {
 
 @media (max-width: 380px) {
     main > .book-details { width: 60vw; max-width: 235px; min-width: 190px; }
-    main > .book-details .details-book { max-height: 250px; padding: 12px 11px; }
+    main > .book-details .details-book { height: 250px; max-height: 250px; padding: 12px 11px; }
     .details-title { font-size: .92rem; }
     .details-info p { font-size: .48rem; }
     .details-quote { font-size: .50rem; }
