@@ -70,7 +70,7 @@
     .book-card::before {
         position: absolute;
         left: 50%;
-        bottom: 27px;
+        bottom: 20px;
         z-index: 2;
         display: block;
         width: fit-content;
