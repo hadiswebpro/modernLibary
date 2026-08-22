@@ -2,9 +2,10 @@
 
 .home-section { display: none; }
 .home-section.view-active { display: block; }
+#theme-btn { display: none !important; }
 
-/* The viewer is a sibling of the active section: right on desktop, above books on mobile. */
 main { position: relative; }
+
 main > .book-details {
     position: absolute;
     top: 0;
@@ -28,17 +29,16 @@ main > .book-details:not(.empty) {
     overflow: visible;
 }
 
-/* Keep the active section and its viewer aligned from the same top edge. */
+main > .book-details.viewer-hidden { display: none !important; }
+
 main > .home-section.view-active {
     width: calc(100% - 370px);
     margin-right: 370px;
 }
 
-/* The old Library-specific split is intentionally gone. */
 .library-page { display: block; }
 .library-content { width: 100%; min-width: 0; }
 
-/* Story card: preserve the original book-like look, but keep everything visible. */
 main > .book-details .details-book {
     position: relative;
     width: 100%;
@@ -191,11 +191,36 @@ main > .book-details .details-book {
     font-size: .56rem;
 }
 
-/* Mobile / tablet: the story viewer becomes a small book-sized card below search. */
+/* Make book cards feel like small real books. */
+.book-card .book-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+}
+
+.book-card .book-title {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.book-card .book-author {
+    text-align: center;
+}
+
+.book-card .reading-page {
+    margin-top: auto;
+    padding-top: 8px;
+    text-align: center;
+    font-size: .66rem;
+    font-weight: 700;
+}
+
+/* Mobile / tablet: small book-sized viewer directly below the search bar. */
 @media (max-width: 850px) {
     main > .book-details {
         position: relative;
-        top: auto;
+        top: auto !important;
         right: auto;
         width: min(60vw, 300px);
         min-width: 205px;
@@ -255,6 +280,10 @@ main > .book-details .details-book {
     .details-page-control button { min-height: 25px; font-size: .50rem; }
     .details-quote { font-size: .53rem; }
     .details-actions button { font-size: .48rem; }
+
+    .book-card .book-title { font-size: .88rem; }
+    .book-card .book-author { font-size: .56rem; }
+    .book-card .reading-page { font-size: .58rem; }
 }
 
 @media (max-width: 380px) {
@@ -263,4 +292,7 @@ main > .book-details .details-book {
     .details-title { font-size: .92rem; }
     .details-info p { font-size: .48rem; }
     .details-quote { font-size: .50rem; }
+    .book-card .book-title { font-size: .80rem; }
+    .book-card .book-author { font-size: .52rem; }
+    .book-card .reading-page { font-size: .54rem; }
 }
