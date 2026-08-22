@@ -85,7 +85,6 @@
         closeMenu();
 
         if (bookDetails) {
-            // Open Story exists only beside Reading and Library. Journal is clean.
             const showViewer = name === "reading" || name === "library";
             bookDetails.classList.toggle("viewer-hidden", !showViewer);
             bookDetails.setAttribute("aria-hidden", String(!showViewer));
@@ -196,6 +195,23 @@
         });
     }
 
+    function restoreEmptyStory() {
+        if (!bookDetails) return;
+
+        bookDetails.classList.add("empty");
+        bookDetails.removeAttribute("data-book-id");
+        bookDetails.innerHTML = `
+            <div class="details-empty-content">
+                <span class="details-empty-icon">✦</span>
+                <strong>Open a story</strong>
+                <p>Select a book from Reading or Library to see its details.</p>
+            </div>
+        `;
+    }
+
+    /* Public close action used by the Open Story × button. */
+    window.closeBookDetails = restoreEmptyStory;
+
     function enhanceStoryViewer() {
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
 
@@ -210,11 +226,7 @@
         close.textContent = "×";
         close.addEventListener("click", event => {
             event.stopPropagation();
-            if (typeof window.closeBookDetails === "function") {
-                window.closeBookDetails();
-            } else {
-                bookDetails.classList.add("empty");
-            }
+            restoreEmptyStory();
         });
         detailsBook.appendChild(close);
     }
