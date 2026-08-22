@@ -1,2 +1,272 @@
 @import url('./style-base.css');
 @import url('./navigation-fixes.css');
+
+/* =========================================================
+   RESPONSIVE CONSISTENCY FIXES
+   Keep the desktop visual system; only repair mobile presentation.
+========================================================= */
+
+@media (max-width: 850px) {
+    /* Header must stay above the story viewer. */
+    .site-header {
+        z-index: 1500;
+    }
+
+    main > .book-details {
+        z-index: 900;
+        padding: 18px;
+        overflow: visible;
+    }
+
+    main > .book-details .details-book {
+        padding: 24px 18px 22px;
+        overflow: visible;
+    }
+
+    /* Keep the same book-card proportions and typography as desktop. */
+    #reading-container,
+    #books-container,
+    .library-books {
+        align-items: stretch;
+    }
+
+    .book-card,
+    @media (max-width: 600px) {
+        height: 178px;
+        min-height: 178px;
+        padding: 16px 14px 14px 18px;
+    }
+
+    .book-card .book-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+    }
+
+    .book-card .book-title {
+        width: 100%;
+        margin: 0 0 6px;
+        font-size: 1rem;
+        line-height: 1.25;
+        text-align: center;
+    }
+
+    .book-card .book-author {
+        width: 100%;
+        margin: 0;
+        font-size: .62rem;
+        text-align: center;
+    }
+
+    .book-card .reading-page {
+        width: 100%;
+        margin-top: auto;
+        padding-top: 10px;
+        font-size: .66rem;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    /* Status is supplied from the existing status class; no JS change needed. */
+    .book-card--reading::before,
+    .book-card--read::before,
+    .book-card--not-read::before {
+        display: block;
+        position: static;
+        order: 2;
+        width: fit-content;
+        max-width: 100%;
+        margin: 7px auto 0;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: .53rem;
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .book-card--reading::before {
+        content: 'Currently Reading';
+        color: var(--forest);
+        background: rgba(49,91,59,.12);
+    }
+
+    .book-card--read::before {
+        content: 'Read';
+        color: var(--espresso);
+        background: rgba(217,184,106,.20);
+    }
+
+    .book-card--not-read::before {
+        content: 'Not Read';
+        color: var(--wood);
+        background: rgba(75,48,32,.10);
+    }
+
+    /* Keep the Open Story controls visible and styled like desktop. */
+    main > .book-details .details-progress {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: 9px;
+        padding: 0;
+    }
+
+    main > .book-details .details-progress-track {
+        display: block;
+        width: 100%;
+        height: 7px;
+        overflow: hidden;
+        background: rgba(75,48,32,.16);
+        border-radius: 999px;
+    }
+
+    main > .book-details .details-progress-bar {
+        display: block;
+        height: 100%;
+        min-width: 0;
+        background: linear-gradient(90deg,var(--forest),var(--sage));
+        border-radius: inherit;
+        transition: width .35s ease;
+    }
+
+    main > .book-details .details-progress-text {
+        display: block;
+        color: var(--espresso);
+        font-size: .6rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    main > .book-details .details-page-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    main > .book-details .details-page-control input {
+        width: 60px;
+        height: 29px;
+        padding: 4px 6px;
+        color: var(--text);
+        background: rgba(255,250,235,.70);
+        border: 1px solid rgba(75,48,32,.18);
+        border-radius: 7px;
+        outline: 0;
+        font-size: .63rem;
+        text-align: center;
+    }
+
+    main > .book-details .details-page-control button {
+        min-height: 29px;
+        padding: 5px 9px;
+        color: var(--white);
+        background: var(--forest);
+        border-radius: 7px;
+        font-size: .57rem;
+        font-weight: 700;
+    }
+
+    main > .book-details .details-page-control button:hover {
+        background: var(--coffee);
+    }
+
+    main > .book-details .details-title,
+    main > .book-details .details-author,
+    main > .book-details .details-info,
+    main > .book-details .details-quote,
+    main > .book-details .details-actions {
+        width: 100%;
+    }
+
+    main > .book-details .details-title,
+    main > .book-details .details-author {
+        text-align: center;
+    }
+
+    main > .book-details .details-info {
+        padding-inline: 5px;
+    }
+
+    main > .book-details .details-actions {
+        padding-inline: 5px;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Restore the original fixed library backdrop on phones. */
+    body {
+        background-attachment: fixed;
+        background-position: center top;
+        background-size: cover;
+    }
+
+    /* Do not shrink the actual book design; only the grid changes. */
+    .book-card {
+        height: 178px;
+        min-height: 178px;
+        padding: 16px 14px 14px 18px;
+    }
+
+    .book-card .book-title {
+        font-size: 1rem;
+    }
+
+    .book-card .book-author {
+        font-size: .62rem;
+    }
+
+    .book-card .reading-page {
+        font-size: .66rem;
+    }
+
+    main > .book-details {
+        z-index: 900;
+        padding: 16px;
+    }
+
+    main > .book-details .details-book {
+        padding: 24px 18px 22px;
+    }
+
+    main > .book-details .details-info,
+    main > .book-details .details-actions {
+        padding-inline: 6px;
+    }
+
+    main > .book-details .details-progress,
+    main > .book-details .details-page-control {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .book-card {
+        height: 178px;
+        min-height: 178px;
+        padding: 16px 14px 14px 18px;
+    }
+
+    .book-card .book-title {
+        font-size: 1rem;
+    }
+
+    .book-card .book-author {
+        font-size: .62rem;
+    }
+
+    .book-card .reading-page {
+        font-size: .66rem;
+    }
+}
