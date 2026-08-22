@@ -26,7 +26,6 @@
         align-items: stretch;
     }
 
-    /* Same card proportions and typography as desktop. */
     .book-card {
         height: 178px;
         min-height: 178px;
@@ -67,7 +66,7 @@
         text-align: center;
     }
 
-    /* Keep the existing styled status and remove the duplicate responsive one. */
+    /* The existing styled status is the only status shown on responsive cards. */
     .book-card--reading::before,
     .book-card--read::before,
     .book-card--not-read::before {
@@ -75,7 +74,6 @@
         content: none !important;
     }
 
-    /* Open Story content stays inside its book. */
     main > .book-details .details-title,
     main > .book-details .details-author,
     main > .book-details .details-info,
@@ -94,7 +92,6 @@
         padding-inline: 6px;
     }
 
-    /* Progress bar remains visible and styled on responsive layouts. */
     main > .book-details .details-progress {
         display: grid;
         grid-template-columns: minmax(0,1fr) auto;
@@ -130,7 +127,6 @@
         white-space: nowrap;
     }
 
-    /* Page input and Save button use the desktop visual treatment. */
     main > .book-details .details-page-control {
         display: flex;
         align-items: center;
@@ -176,7 +172,6 @@
         background-size: cover;
     }
 
-    /* Only the grid changes on phones; the card design stays the same. */
     .book-card {
         height: 178px;
         min-height: 178px;
