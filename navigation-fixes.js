@@ -38,7 +38,7 @@
     if (menuButton) {
         menuButton.addEventListener("click", event => {
             event.stopPropagation();
-            menuPanel.classList.contains("open") ? closeMenu() : openMenu();
+            menuPanel?.classList.contains("open") ? closeMenu() : openMenu();
         });
     }
 
@@ -57,20 +57,18 @@
         if (!bookDetails || window.innerWidth <= 850) return;
 
         const activeSection = Object.values(sections).find(section =>
-            section && section.classList.contains("view-active")
+            section?.classList.contains("view-active")
         );
 
         if (!activeSection) return;
 
-        /* Align with the actual glass/content panel, not the section title. */
-        let target = activeSection.querySelector(".currently-reading, .library-page, .reading-stats");
-        if (!target) target = activeSection;
+        const target = activeSection.querySelector(
+            ".currently-reading, .library-content, .reading-stats"
+        ) || activeSection;
 
         const mainRect = bookDetails.parentElement.getBoundingClientRect();
         const targetRect = target.getBoundingClientRect();
-        const top = targetRect.top - mainRect.top;
-
-        bookDetails.style.top = `${Math.max(0, top)}px`;
+        bookDetails.style.top = `${Math.max(0, targetRect.top - mainRect.top)}px`;
     }
 
     function refreshCards() {
@@ -80,15 +78,16 @@
 
     function showView(name) {
         Object.entries(sections).forEach(([key, section]) => {
-            if (section) section.classList.toggle("view-active", key === name);
+            section?.classList.toggle("view-active", key === name);
         });
 
         setActiveNav(name);
         closeMenu();
 
         if (bookDetails) {
-            const showViewer = name === "reading" || name === "library" || name === "journal";
-            bookDetails.classList.toggle("viewer-hidden", !showViewer || (window.innerWidth <= 850 && name === "journal"));
+            // Open Story exists only beside Reading and Library. Journal is clean.
+            const showViewer = name === "reading" || name === "library";
+            bookDetails.classList.toggle("viewer-hidden", !showViewer);
             bookDetails.setAttribute("aria-hidden", String(!showViewer));
         }
 
@@ -119,7 +118,15 @@
     });
 
     document.addEventListener("click", event => {
-        if (menuPanel && menuButton && menuPanel.classList.contains("open") && !menuPanel.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
+        if (
+            menuPanel &&
+            menuButton &&
+            menuPanel.classList.contains("open") &&
+            !menuPanel.contains(event.target) &&
+            !menuButton.contains(event.target)
+        ) {
+            closeMenu();
+        }
     });
 
     document.addEventListener("keydown", event => {
@@ -134,14 +141,13 @@
         let visible = 0;
 
         cards.forEach(card => {
-            const text = card.textContent.toLowerCase();
-            const match = !query || text.includes(query);
+            const match = !query || card.textContent.toLowerCase().includes(query);
             card.style.display = match ? "" : "none";
             if (match) visible++;
         });
 
         const empty = document.getElementById("library-empty");
-        if (empty && cards.length > 0) {
+        if (empty) {
             empty.textContent = query && visible === 0
                 ? "No stories match your search..."
                 : "Your library is waiting for its first story...";
@@ -164,12 +170,10 @@
         });
     }
 
-    if (searchBtn) {
-        searchBtn.addEventListener("click", event => {
-            event.preventDefault();
-            openLibraryForSearch();
-        });
-    }
+    searchBtn?.addEventListener("click", event => {
+        event.preventDefault();
+        openLibraryForSearch();
+    });
 
     function addStatusLabels(container) {
         if (!container) return;
@@ -196,30 +200,30 @@
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
 
         const detailsBook = bookDetails.querySelector(".details-book");
-        if (!detailsBook) return;
+        if (!detailsBook || detailsBook.querySelector(".details-close")) return;
 
-        if (!detailsBook.querySelector(".details-close")) {
-            const close = document.createElement("button");
-            close.type = "button";
-            close.className = "details-close";
-            close.setAttribute("aria-label", "Close story");
-            close.title = "Close story";
-            close.textContent = "×";
-            close.addEventListener("click", event => {
-                event.stopPropagation();
-                if (typeof window.closeBookDetails === "function") {
-                    window.closeBookDetails();
-                } else {
-                    bookDetails.classList.add("empty");
-                }
-            });
-            detailsBook.appendChild(close);
-        }
+        const close = document.createElement("button");
+        close.type = "button";
+        close.className = "details-close";
+        close.setAttribute("aria-label", "Close story");
+        close.title = "Close story";
+        close.textContent = "×";
+        close.addEventListener("click", event => {
+            event.stopPropagation();
+            if (typeof window.closeBookDetails === "function") {
+                window.closeBookDetails();
+            } else {
+                bookDetails.classList.add("empty");
+            }
+        });
+        detailsBook.appendChild(close);
     }
 
     if (bookDetails) {
         const observer = new MutationObserver(() => {
-            if (!bookDetails.classList.contains("empty")) requestAnimationFrame(enhanceStoryViewer);
+            if (!bookDetails.classList.contains("empty")) {
+                requestAnimationFrame(enhanceStoryViewer);
+            }
         });
         observer.observe(bookDetails, { childList: true, subtree: true });
     }
@@ -236,10 +240,10 @@
     }
 
     window.addEventListener("resize", () => {
-        const activeName = Object.keys(sections).find(key => sections[key]?.classList.contains("view-active"));
-        if (bookDetails) {
-            bookDetails.classList.toggle("viewer-hidden", activeName === "journal" && window.innerWidth <= 850);
-        }
+        const activeName = Object.keys(sections).find(
+            key => sections[key]?.classList.contains("view-active")
+        );
+        bookDetails?.classList.toggle("viewer-hidden", activeName === "journal");
         alignStoryViewer();
     });
 
