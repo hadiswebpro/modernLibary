@@ -1,23 +1,14 @@
-/* =========================================================
-   MODERN LIBRARY — FINAL VIEW + RESPONSIVE DETAILS FIXES
-========================================================= */
+/* MODERN LIBRARY — RESPONSIVE VIEW LAYOUT */
 
-/* The desktop header already contains Reading / Library / Journal. */
 .menu-btn { display: none; }
-
-/* Only the selected section is visible. Reading is the initial view. */
 .home-section { display: none; }
 .home-section.view-active { display: block; }
 
-/* Mobile menu must be able to open. */
-@media (max-width: 850px) {
-    .menu-btn { display: grid; }
-}
-
-/* Library details beside the books on desktop. */
+/* Desktop: Library books + Open a Book side by side. */
 .library-page {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
+    grid-template-columns: minmax(0, 1fr) minmax(270px, 330px);
+    gap: 18px;
     align-items: start;
 }
 
@@ -29,56 +20,156 @@
 
 .details-book {
     width: 100%;
-    min-height: 390px;
+    min-height: 350px;
 }
 
-/* Tablet/mobile: Open a Book becomes a normal block ABOVE the books. */
+/* Tablet */
 @media (max-width: 850px) {
+    .menu-btn { display: grid; }
+
     .library-page {
         display: flex;
         flex-direction: column;
+        gap: 10px;
     }
 
+    /* Selected book details sit above the library cards. */
     .book-details {
         position: relative;
         inset: auto;
         order: -1;
         width: 100%;
-        max-height: none;
         min-height: 0;
-        padding: 12px;
-        transform: none;
+        padding: 0;
         overflow: visible;
-        z-index: 2;
     }
 
-    .book-details.empty {
-        display: none;
-    }
+    /* Empty Open a Book does not waste space. */
+    .book-details.empty { display: none; }
 
     .details-book {
         min-height: 0;
         height: auto;
-        padding: 22px 18px;
+        padding: 18px 16px;
+    }
+
+    .library-content {
+        width: 100%;
+        min-width: 0;
+        padding: 14px;
+    }
+
+    .library-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .library-books,
+    #reading-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .book-card {
+        height: 155px;
+        min-height: 155px;
+        padding: 13px 11px 11px 15px;
     }
 }
 
+/* Mobile */
 @media (max-width: 600px) {
-    .details-book {
-        min-height: 235px;
-        padding: 17px 15px;
-        border-radius: 7px 14px 14px 7px;
+    /* Currently Reading remains compact and visible on Home. */
+    .currently-reading-section { margin-bottom: 18px; }
+    .currently-reading {
+        padding: 11px;
+        border-radius: 14px;
     }
 
-    .details-title { font-size: 1.2rem; }
-    .details-info { gap: 5px; }
-    .details-info p { font-size: .59rem; }
-    .details-quote { margin: 10px 0; font-size: .63rem; }
+    #reading-container,
+    .library-books {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    /* My Library / All Your Stories fits the viewport cleanly. */
+    .library-content {
+        padding: 11px;
+        border-radius: 14px;
+    }
+
+    .library-header {
+        margin-bottom: 12px;
+    }
+
+    .library-heading > span { font-size: .56rem; }
+    .library-heading small { font-size: .53rem; }
+
+    .library-filter {
+        width: 100%;
+        gap: 5px;
+    }
+
+    .library-filter-btn {
+        min-height: 28px;
+        padding: 5px 8px;
+        font-size: .55rem;
+    }
+
+    .book-card {
+        height: 150px;
+        min-height: 150px;
+        padding: 12px 10px 10px 14px;
+    }
+
+    .book-title { font-size: .86rem; }
+    .book-author { font-size: .57rem; }
+
+    /* Open a Book appears above the cards and is compact after selection. */
+    .details-book {
+        min-height: 0;
+        max-height: 280px;
+        padding: 15px 14px;
+        overflow-y: auto;
+        border-radius: 7px 13px 13px 7px;
+    }
+
+    .details-title { font-size: 1.08rem; }
+    .details-author { margin-bottom: 9px; font-size: .58rem; }
+    .details-info { gap: 4px; margin-top: 7px; }
+    .details-info p { font-size: .56rem; line-height: 1.35; }
+    .details-quote { margin: 8px 0; font-size: .59rem; line-height: 1.45; }
+    .details-actions { gap: 5px; margin-top: 7px; }
+    .details-actions button { min-height: 27px; padding: 5px 7px; font-size: .52rem; }
+
+    /* Currently Reading cards are slightly smaller than Library cards. */
+    #reading-container .book-card {
+        height: 142px;
+        min-height: 142px;
+    }
 }
 
+/* Very small phones */
 @media (max-width: 380px) {
+    .currently-reading,
+    .library-content { padding: 9px; }
+
+    #reading-container,
+    .library-books { gap: 7px; }
+
+    .book-card,
+    #reading-container .book-card {
+        height: 138px;
+        min-height: 138px;
+        padding: 11px 8px 9px 12px;
+    }
+
+    .book-title { font-size: .8rem; }
+    .book-author { font-size: .53rem; }
+
     .details-book {
-        min-height: 215px;
-        padding: 15px 13px;
+        max-height: 255px;
+        padding: 13px 12px;
     }
 }
