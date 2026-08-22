@@ -1,5 +1,9 @@
 /* Responsive Book Details — keep the desktop card language and controls on narrow screens. */
 @media (max-width: 850px) {
+    .site-header {
+        z-index: 1300;
+    }
+
     .book-details {
         position: fixed;
         width: min(82vw, 430px);
@@ -27,6 +31,7 @@
     .details-page-control input {
         width: 72px;
         min-height: 31px;
+        margin-inline: 3px;
         padding: 7px 8px;
         color: var(--text);
         background: var(--paper);
