@@ -66,12 +66,45 @@
         text-align: center;
     }
 
-    /* The existing styled status is the only status shown on responsive cards. */
-    .book-card--reading::before,
-    .book-card--read::before,
+    /* Keep the small centered status used by the desktop design. */
+    .book-card::before {
+        position: absolute;
+        left: 50%;
+        bottom: 27px;
+        z-index: 2;
+        display: block;
+        width: fit-content;
+        max-width: 90%;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: .53rem;
+        font-weight: 700;
+        line-height: 1.1;
+        text-align: center;
+        pointer-events: none;
+    }
+
+    .book-card--reading::before {
+        content: 'Currently Reading';
+        color: var(--forest);
+        background: rgba(49,91,59,.12);
+    }
+
+    .book-card--read::before {
+        content: 'Read';
+        color: var(--espresso);
+        background: rgba(217,184,106,.20);
+    }
+
     .book-card--not-read::before {
+        content: 'Not Read';
+        color: var(--wood);
+        background: rgba(75,48,32,.10);
+    }
+
+    /* The unstyled duplicate label must not appear on responsive cards. */
+    .book-status-label {
         display: none !important;
-        content: none !important;
     }
 
     main > .book-details .details-title,
