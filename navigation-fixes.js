@@ -10,11 +10,7 @@
     const librarySection = document.getElementById("library-section");
     const statsSection = document.getElementById("stats-section");
 
-    const sections = {
-        reading: readingSection,
-        library: librarySection,
-        journal: statsSection
-    };
+    const sections = { reading: readingSection, library: librarySection, journal: statsSection };
 
     function closeMenu() {
         if (!menuPanel) return;
@@ -31,10 +27,9 @@
     }
 
     if (menuButton) {
-        menuButton.addEventListener("click", function (event) {
+        menuButton.addEventListener("click", event => {
             event.stopPropagation();
-            const isOpen = menuPanel && menuPanel.classList.contains("open");
-            isOpen ? closeMenu() : openMenu();
+            menuPanel.classList.contains("open") ? closeMenu() : openMenu();
         });
     }
 
@@ -51,38 +46,30 @@
 
     function showView(name) {
         Object.entries(sections).forEach(([key, section]) => {
-            if (!section) return;
-            section.classList.toggle("view-active", key === name);
+            if (section) section.classList.toggle("view-active", key === name);
         });
 
         setActiveNav(name);
         closeMenu();
 
-        if (name === "library" && typeof renderLibrary === "function") renderLibrary();
-        if (name === "reading" && typeof renderCurrentlyReading === "function") renderCurrentlyReading();
-        if (name === "journal" && typeof updateStatsAndChart === "function") updateStatsAndChart();
+        if (name === "library" && typeof window.renderLibrary === "function") window.renderLibrary();
+        if (name === "reading" && typeof window.renderCurrentlyReading === "function") window.renderCurrentlyReading();
+        if (name === "journal" && typeof window.updateStatsAndChart === "function") window.updateStatsAndChart();
 
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function handleNavigation(event, name) {
-        event.preventDefault();
-        showView(name);
+    function nameFromLink(link) {
+        const href = link.getAttribute("href");
+        if (href === "#library-section") return "library";
+        if (href === "#stats-section") return "journal";
+        return "reading";
     }
 
-    desktopLinks.forEach(link => {
+    [...desktopLinks, ...mobileLinks].forEach(link => {
         link.addEventListener("click", event => {
-            const href = link.getAttribute("href");
-            const name = href === "#library-section" ? "library" : href === "#stats-section" ? "journal" : "reading";
-            handleNavigation(event, name);
-        });
-    });
-
-    mobileLinks.forEach(link => {
-        link.addEventListener("click", event => {
-            const href = link.getAttribute("href");
-            const name = href === "#library-section" ? "library" : href === "#stats-section" ? "journal" : "reading";
-            handleNavigation(event, name);
+            event.preventDefault();
+            showView(nameFromLink(link));
         });
     });
 
@@ -95,13 +82,20 @@
     });
 
     /* Attach the existing page tracker whenever a reading book is opened. */
-    const originalOpenBookDetails = typeof window.openBookDetails === "function" ? window.openBookDetails : null;
+    const originalOpenBookDetails = window.openBookDetails;
 
-    if (originalOpenBookDetails) {
+    if (typeof originalOpenBookDetails === "function") {
         window.openBookDetails = function (id) {
             originalOpenBookDetails(id);
 
-            const book = Array.isArray(window.myLibrary) ? window.myLibrary.find(item => item.id === id) : null;
+            let books = [];
+            try {
+                books = JSON.parse(localStorage.getItem("books")) || [];
+            } catch (error) {
+                return;
+            }
+
+            const book = books.find(item => item.id === id);
 
             if (book && book.status === "reading" && typeof window.addPageTrackerToDetails === "function") {
                 window.addPageTrackerToDetails(book);
@@ -109,7 +103,7 @@
         };
     }
 
-    /* Always start in Currently Reading after a fresh load. */
+    /* Every fresh load starts on Currently Reading. */
     function initializeFinalNavigation() {
         showView("reading");
         if (typeof window.renderAll === "function") window.renderAll();
