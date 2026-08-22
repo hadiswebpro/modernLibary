@@ -1,4 +1,4 @@
-/* Modern Library — navigation + shared story viewer fixes */
+/* Modern Library — navigation, search, shared story viewer */
 (function () {
     "use strict";
 
@@ -10,6 +10,10 @@
     const librarySection = document.getElementById("library-section");
     const statsSection = document.getElementById("stats-section");
     const bookDetails = document.getElementById("book-details");
+    const bookContainer = document.getElementById("books-container");
+    const readingContainer = document.getElementById("reading-container");
+    const searchInput = document.getElementById("search-input");
+    const searchBtn = document.getElementById("search-btn");
 
     const sections = {
         reading: readingSection,
@@ -49,18 +53,25 @@
         });
     }
 
+    function getActiveSection(name) {
+        return sections[name] || null;
+    }
+
     function alignStoryViewer() {
         if (!bookDetails || window.innerWidth <= 850) return;
-        const activeSection = readingSection && readingSection.classList.contains("view-active")
-            ? readingSection
-            : librarySection && librarySection.classList.contains("view-active")
-                ? librarySection
-                : null;
+
+        const activeSection = Object.values(sections).find(section =>
+            section && section.classList.contains("view-active")
+        );
+
         if (!activeSection) return;
-        const main = document.querySelector("main");
-        if (!main) return;
-        const top = activeSection.offsetTop;
-        bookDetails.style.top = `${top}px`;
+
+        bookDetails.style.top = `${activeSection.offsetTop}px`;
+    }
+
+    function refreshCards() {
+        addStatusLabels(bookContainer);
+        addStatusLabels(readingContainer);
     }
 
     function showView(name) {
@@ -72,8 +83,8 @@
         closeMenu();
 
         if (bookDetails) {
-            const showViewer = name === "reading" || name === "library";
-            bookDetails.classList.toggle("viewer-hidden", !showViewer);
+            const showViewer = name === "reading" || name === "library" || name === "journal";
+            bookDetails.classList.toggle("viewer-hidden", !showViewer || (window.innerWidth <= 850 && name === "journal"));
             bookDetails.setAttribute("aria-hidden", String(!showViewer));
         }
 
@@ -81,7 +92,11 @@
         if (name === "reading" && typeof window.renderCurrentlyReading === "function") window.renderCurrentlyReading();
         if (name === "journal" && typeof window.updateStatsAndChart === "function") window.updateStatsAndChart();
 
-        requestAnimationFrame(alignStoryViewer);
+        requestAnimationFrame(() => {
+            refreshCards();
+            alignStoryViewer();
+        });
+
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -108,13 +123,93 @@
     });
 
     /* ---------------------------------------------------------
+       SEARCH
+       Search always opens Library first, including when the user
+       is currently on Reading. Filtering is done on rendered cards.
+    --------------------------------------------------------- */
+
+    function filterLibraryCards() {
+        if (!bookContainer) return;
+
+        const query = (searchInput?.value || "").trim().toLowerCase();
+        const cards = bookContainer.querySelectorAll(".book-card");
+        let visible = 0;
+
+        cards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            const match = !query || text.includes(query);
+            card.style.display = match ? "" : "none";
+            if (match) visible++;
+        });
+
+        const empty = document.getElementById("library-empty");
+        if (empty && cards.length > 0) {
+            empty.textContent = query && visible === 0
+                ? "No stories match your search..."
+                : "Your library is waiting for its first story...";
+            empty.style.display = visible === 0 ? "block" : "none";
+        }
+    }
+
+    function openLibraryForSearch() {
+        showView("library");
+        requestAnimationFrame(filterLibraryCards);
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", () => {
+            openLibraryForSearch();
+        });
+
+        searchInput.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                openLibraryForSearch();
+            }
+        });
+    }
+
+    if (searchBtn) {
+        searchBtn.addEventListener("click", event => {
+            event.preventDefault();
+            openLibraryForSearch();
+        });
+    }
+
+    /* ---------------------------------------------------------
+       BOOK CARD STATUS LABELS
+       Library cards now show status beneath the book content.
+    --------------------------------------------------------- */
+
+    function addStatusLabels(container) {
+        if (!container) return;
+
+        container.querySelectorAll(".book-card").forEach(card => {
+            if (card.querySelector(".book-status-label")) return;
+
+            let status = "not-read";
+            if (card.classList.contains("book-card--reading")) status = "reading";
+            if (card.classList.contains("book-card--read")) status = "read";
+
+            const label = document.createElement("span");
+            label.className = `book-status-label book-status-label--${status}`;
+            label.textContent = {
+                "reading": "Currently Reading",
+                "read": "Read",
+                "not-read": "Not Read"
+            }[status];
+
+            card.appendChild(label);
+        });
+    }
+
+    /* ---------------------------------------------------------
        STORY VIEWER CONTROLS
-       The original details card stays intact. We only enhance it
-       with a close button and the page input for reading books.
     --------------------------------------------------------- */
 
     function enhanceStoryViewer() {
         if (!bookDetails || bookDetails.classList.contains("empty")) return;
+
         const detailsBook = bookDetails.querySelector(".details-book");
         if (!detailsBook) return;
 
@@ -122,7 +217,6 @@
             const close = document.createElement("button");
             close.type = "button";
             close.className = "details-close";
-            close.id = "close-details";
             close.setAttribute("aria-label", "Close story");
             close.title = "Close story";
             close.textContent = "×";
@@ -131,73 +225,10 @@
                 if (typeof window.closeBookDetails === "function") {
                     window.closeBookDetails();
                 } else {
-                    bookDetails.classList.remove("open");
+                    bookDetails.classList.add("empty");
                 }
             });
             detailsBook.appendChild(close);
-        }
-
-        const bookId = document.querySelector(`.book-card[data-id]`) ? null : null;
-        const cards = document.querySelectorAll(".book-card");
-        let selectedBook = null;
-        for (const card of cards) {
-            if (card.classList.contains("book-card--reading") && bookDetails.querySelector(".details-progress")) {
-                const id = card.dataset.id;
-                try {
-                    const books = JSON.parse(localStorage.getItem("books")) || [];
-                    selectedBook = books.find(book => book.id === id) || null;
-                } catch (_) {}
-                if (selectedBook) break;
-            }
-        }
-
-        /* The selected book is inferred from the visible Current page line. */
-        let readingBook = null;
-        try {
-            const books = JSON.parse(localStorage.getItem("books")) || [];
-            const currentLine = [...detailsBook.querySelectorAll(".details-info p")]
-                .find(p => p.textContent.toLowerCase().includes("current page"));
-            if (currentLine) {
-                const match = currentLine.textContent.match(/(\d+)\s*\/\s*(\d+)/);
-                if (match) {
-                    readingBook = books.find(book =>
-                        book.status === "reading" &&
-                        Number(book.currentPage) === Number(match[1]) &&
-                        Number(book.pages) === Number(match[2])
-                    ) || null;
-                }
-            }
-        } catch (_) {}
-
-        if (readingBook && !detailsBook.querySelector(".details-page-control")) {
-            const control = document.createElement("div");
-            control.className = "details-page-control";
-
-            const label = document.createElement("label");
-            label.textContent = "Page";
-
-            const input = document.createElement("input");
-            input.type = "number";
-            input.min = "0";
-            input.max = String(readingBook.pages);
-            input.value = String(readingBook.currentPage);
-            input.setAttribute("aria-label", "Current page");
-
-            const save = document.createElement("button");
-            save.type = "button";
-            save.textContent = "Save";
-            save.addEventListener("click", event => {
-                event.stopPropagation();
-                if (typeof window.updateCurrentPage === "function") {
-                    window.updateCurrentPage(readingBook.id, input.value);
-                }
-            });
-
-            control.append(label, input, save);
-
-            const progress = detailsBook.querySelector(".details-progress");
-            if (progress) progress.insertAdjacentElement("afterend", control);
-            else detailsBook.querySelector(".details-info")?.appendChild(control);
         }
     }
 
@@ -210,23 +241,33 @@
         observer.observe(bookDetails, { childList: true, subtree: true });
     }
 
-    /* Existing page tracker hook is retained if another script provides it. */
     const originalOpenBookDetails = window.openBookDetails;
     if (typeof originalOpenBookDetails === "function") {
         window.openBookDetails = function (id) {
             originalOpenBookDetails(id);
-            requestAnimationFrame(enhanceStoryViewer);
-            requestAnimationFrame(alignStoryViewer);
+            requestAnimationFrame(() => {
+                enhanceStoryViewer();
+                alignStoryViewer();
+            });
         };
     }
 
-    window.addEventListener("resize", alignStoryViewer);
+    window.addEventListener("resize", () => {
+        const activeName = Object.keys(sections).find(key => sections[key]?.classList.contains("view-active"));
+        if (bookDetails) {
+            bookDetails.classList.toggle("viewer-hidden", activeName === "journal" && window.innerWidth <= 850);
+        }
+        alignStoryViewer();
+    });
 
     function initializeFinalNavigation() {
         showView("reading");
         if (typeof window.renderAll === "function") window.renderAll();
         if (typeof window.updateStatsAndChart === "function") window.updateStatsAndChart();
-        requestAnimationFrame(alignStoryViewer);
+        requestAnimationFrame(() => {
+            refreshCards();
+            alignStoryViewer();
+        });
     }
 
     if (document.readyState === "loading") {
