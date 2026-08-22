@@ -2,7 +2,8 @@
 @import url('./navigation-fixes.css');
 
 /* =========================================================
-   RESPONSIVE CONSISTENCY FIXES
+   RESPONSIVE VISUAL FIXES
+   Keep desktop styling intact. Only repair mobile presentation.
 ========================================================= */
 
 @media (max-width: 850px) {
@@ -25,6 +26,7 @@
         align-items: stretch;
     }
 
+    /* Same card proportions and typography as desktop. */
     .book-card {
         height: 178px;
         min-height: 178px;
@@ -34,7 +36,6 @@
     .book-card .book-info {
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
         align-items: center;
         width: 100%;
         height: 100%;
@@ -59,22 +60,26 @@
     .book-card .reading-page {
         width: 100%;
         margin-top: auto;
-        padding-top: 10px;
+        padding: 10px 0 24px;
         font-size: .66rem;
         font-weight: 700;
         text-align: center;
     }
 
+    /* Existing status classes get their labels without changing JS. */
     .book-card--reading::before,
     .book-card--read::before,
     .book-card--not-read::before {
         display: block;
-        position: static;
+        position: absolute;
+        left: 50%;
+        bottom: 9px;
         width: fit-content;
-        max-width: 100%;
-        margin: 7px auto 0;
+        max-width: calc(100% - 20px);
+        margin: 0;
         padding: 4px 8px;
         border-radius: 999px;
+        transform: translateX(-50%);
         font-size: .53rem;
         font-weight: 700;
         line-height: 1.1;
@@ -100,14 +105,33 @@
         background: rgba(75,48,32,.10);
     }
 
+    /* Open Story content stays inside its book. */
+    main > .book-details .details-title,
+    main > .book-details .details-author,
+    main > .book-details .details-info,
+    main > .book-details .details-quote,
+    main > .book-details .details-actions {
+        width: 100%;
+    }
+
+    main > .book-details .details-title,
+    main > .book-details .details-author {
+        text-align: center;
+    }
+
+    main > .book-details .details-info,
+    main > .book-details .details-actions {
+        padding-inline: 6px;
+    }
+
+    /* Progress bar remains visible and styled on responsive layouts. */
     main > .book-details .details-progress {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-columns: minmax(0,1fr) auto;
         align-items: center;
         gap: 8px;
         width: 100%;
         margin-top: 9px;
-        padding: 0;
     }
 
     main > .book-details .details-progress-track {
@@ -136,6 +160,7 @@
         white-space: nowrap;
     }
 
+    /* Page input and Save button use the desktop visual treatment. */
     main > .book-details .details-page-control {
         display: flex;
         align-items: center;
@@ -169,24 +194,8 @@
         font-weight: 700;
     }
 
-    main > .book-details .details-page-control button:hover { background: var(--coffee); }
-
-    main > .book-details .details-title,
-    main > .book-details .details-author,
-    main > .book-details .details-info,
-    main > .book-details .details-quote,
-    main > .book-details .details-actions {
-        width: 100%;
-    }
-
-    main > .book-details .details-title,
-    main > .book-details .details-author {
-        text-align: center;
-    }
-
-    main > .book-details .details-info,
-    main > .book-details .details-actions {
-        padding-inline: 5px;
+    main > .book-details .details-page-control button:hover {
+        background: var(--coffee);
     }
 }
 
@@ -197,6 +206,7 @@
         background-size: cover;
     }
 
+    /* Only the grid changes on phones; the card design stays the same. */
     .book-card {
         height: 178px;
         min-height: 178px;
@@ -212,7 +222,9 @@
         padding: 16px;
     }
 
-    main > .book-details .details-book { padding: 24px 18px 22px; }
+    main > .book-details .details-book {
+        padding: 24px 18px 22px;
+    }
 }
 
 @media (max-width: 380px) {
