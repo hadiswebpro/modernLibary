@@ -103,7 +103,7 @@
         background: rgba(75,48,32,.10);
     }
 
-    /* The unstyled duplicate label must not appear on responsive cards. */
+    /* The large unstyled duplicate label must not appear on responsive cards. */
     .book-status-label {
         display: none !important;
     }
