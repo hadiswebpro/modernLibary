@@ -1,0 +1,94 @@
+/* =========================================================
+   MODERN LIBRARY — VIEW + RESPONSIVE DETAILS FIXES
+========================================================= */
+
+/* Desktop header already contains the three main destinations. */
+.menu-btn { display: none; }
+
+/* Only Currently Reading is visible on the initial Home view. */
+.library-section,
+.stats-section { display: none; }
+
+/* Anchor-based page views: no extra JS is required. */
+#library-section:target,
+#stats-section:target { display: block; }
+
+body:has(#library-section:target) .currently-reading-section,
+body:has(#stats-section:target) .currently-reading-section { display: none; }
+
+body:has(#library-section:target) .library-section,
+body:has(#stats-section:target) .stats-section { display: block; }
+
+body:has(#library-section:target) .stats-section,
+body:has(#stats-section:target) .library-section { display: none; }
+
+/* Library details beside the books on desktop. */
+.library-page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 350px);
+    align-items: start;
+}
+
+.book-details {
+    position: sticky;
+    top: 88px;
+    width: 100%;
+}
+
+.details-book {
+    width: 100%;
+    min-height: 390px;
+}
+
+/* Tablet/mobile: details becomes a normal block ABOVE the books. */
+@media (max-width: 850px) {
+    .menu-btn { display: grid; }
+
+    .library-page {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-details {
+        position: relative;
+        inset: auto;
+        order: -1;
+        width: 100%;
+        max-height: none;
+        min-height: 0;
+        padding: 12px;
+        transform: none;
+        overflow: visible;
+        z-index: 2;
+    }
+
+    .book-details.empty {
+        display: none;
+    }
+
+    .details-book {
+        min-height: 0;
+        height: auto;
+        padding: 22px 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .details-book {
+        min-height: 235px;
+        padding: 17px 15px;
+        border-radius: 7px 14px 14px 7px;
+    }
+
+    .details-title { font-size: 1.2rem; }
+    .details-info { gap: 5px; }
+    .details-info p { font-size: .59rem; }
+    .details-quote { margin: 10px 0; font-size: .63rem; }
+}
+
+@media (max-width: 380px) {
+    .details-book {
+        min-height: 215px;
+        padding: 15px 13px;
+    }
+}
