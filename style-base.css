@@ -210,7 +210,7 @@ main { width: min(1400px, 94%); margin: auto; padding: 8px 0 65px; }
 .book-title { margin: 0 0 6px; color: var(--espresso); font: 400 1rem/1.25 'DM Serif Display',Georgia,serif; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
 .book-author { margin: 0; color: rgba(45,33,25,.68); font-size: .62rem; font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .book-card--reading .book-title, .book-card--read .book-title { color: var(--espresso); }
-.reading-page { margin: 10px 0 0; color: rgba(45,33,25,.80); font-size: .66rem; font-weight: 700; }
+.reading-page { margin: 10px 0 0; color: rgba(45,33,25,.80); font-size: .66rem; font-weight: 700; margin-bottom: 15px;}
 
 /* =========================================================
    LIBRARY
