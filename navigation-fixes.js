@@ -59,10 +59,26 @@
         bookDetails.style.top = `${Math.max(0, targetRect.top - mainRect.top)}px`;
     }
 
+    function addStatusLabels(container) {
+        if (!container) return;
+        container.querySelectorAll(".book-card").forEach(card => {
+            if (card.querySelector(".book-status-label")) return;
+            let status = "not-read";
+            if (card.classList.contains("book-card--reading")) status = "reading";
+            if (card.classList.contains("book-card--read")) status = "read";
+            const label = document.createElement("span");
+            label.className = `book-status-label book-status-label--${status}`;
+            label.textContent = { reading: "Currently Reading", read: "Read", "not-read": "Not Read" }[status];
+            card.appendChild(label);
+        });
+    }
+
     function refreshCards() {
         addStatusLabels(bookContainer);
         addStatusLabels(readingContainer);
     }
+
+    window.refreshLibraryStatusLabels = refreshCards;
 
     function showView(name) {
         Object.entries(sections).forEach(([key, section]) => section?.classList.toggle("view-active", key === name));
@@ -135,20 +151,6 @@
         openLibraryForSearch();
     });
 
-    function addStatusLabels(container) {
-        if (!container) return;
-        container.querySelectorAll(".book-card").forEach(card => {
-            if (card.querySelector(".book-status-label")) return;
-            let status = "not-read";
-            if (card.classList.contains("book-card--reading")) status = "reading";
-            if (card.classList.contains("book-card--read")) status = "read";
-            const label = document.createElement("span");
-            label.className = `book-status-label book-status-label--${status}`;
-            label.textContent = { reading: "Currently Reading", read: "Read", "not-read": "Not Read" }[status];
-            card.appendChild(label);
-        });
-    }
-
     function restoreEmptyStory() {
         if (!bookDetails) return;
         bookDetails.classList.add("empty");
@@ -181,29 +183,36 @@
         const saveButton = document.createElement("button");
         saveButton.type = "button"; saveButton.textContent = "Save";
         saveButton.addEventListener("click", event => {
-            event.preventDefault(); event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
             const value = Math.floor(Number(input.value));
-            if (!Number.isFinite(value) || value < 0 || value > Number(book.pages)) { input.value = String(Number(book.currentPage) || 0); return; }
+            if (!Number.isFinite(value) || value < 0 || value > Number(book.pages)) {
+                input.value = String(Number(book.currentPage) || 0);
+                return;
+            }
+
+            /*
+               Use the real application state instead of only changing localStorage.
+               renderAll is temporarily disabled so Save does not rebuild the whole page.
+               updateCurrentPage still updates myLibrary, localStorage and Book Details.
+            */
+            if (typeof window.updateCurrentPage === "function") {
+                const originalRenderAll = window.renderAll;
+                window.renderAll = function () {};
+                try {
+                    window.updateCurrentPage(book.id, value);
+                } finally {
+                    window.renderAll = originalRenderAll;
+                }
+                return;
+            }
+
             let latestBooks;
             try { latestBooks = JSON.parse(localStorage.getItem("books") || "[]"); } catch { return; }
             const latestBook = latestBooks.find(item => String(item.id) === String(book.id));
             if (!latestBook) return;
             latestBook.currentPage = value;
             localStorage.setItem("books", JSON.stringify(latestBooks));
-            const liveBook = Array.isArray(window.myLibrary) ? window.myLibrary.find(item => String(item.id) === String(latestBook.id)) : null;
-            if (liveBook) liveBook.currentPage = value;
-            const currentPage = [...detailsBook.querySelectorAll(".details-info p")].find(el => el.querySelector("strong")?.textContent?.trim().toLowerCase() === "current page")?.querySelector("span");
-            if (currentPage) currentPage.textContent = `${value} / ${latestBook.pages}`;
-            const percent = latestBook.pages > 0 ? Math.min(100, Math.max(0, (value / latestBook.pages) * 100)) : 0;
-            const progressBar = detailsBook.querySelector(".details-progress-bar");
-            if (progressBar) progressBar.style.width = `${percent}%`;
-            const progressText = detailsBook.querySelector(".details-progress-text");
-            if (progressText) progressText.textContent = `${Math.round(percent)}% read`;
-            input.value = String(value);
-            document.querySelectorAll(`#reading-container [data-id="${CSS.escape(String(latestBook.id))}"], #books-container [data-id="${CSS.escape(String(latestBook.id))}"]`).forEach(card => {
-                const pageEl = card.querySelector(".reading-page");
-                if (pageEl) pageEl.textContent = `${value} / ${latestBook.pages}`;
-            });
         });
         control.append(label, input, saveButton);
         const progress = detailsBook.querySelector(".details-progress");
@@ -234,6 +243,46 @@
     const originalOpenBookDetails = window.openBookDetails;
     if (typeof originalOpenBookDetails === "function") {
         window.openBookDetails = function (id) { originalOpenBookDetails(id); requestAnimationFrame(() => { enhanceStoryViewer(); alignStoryViewer(); }); };
+    }
+
+    const originalRenderLibrary = window.renderLibrary;
+    if (typeof originalRenderLibrary === "function") {
+        window.renderLibrary = function () {
+            originalRenderLibrary();
+            requestAnimationFrame(refreshCards);
+        };
+    }
+
+    const originalRenderCurrentlyReading = window.renderCurrentlyReading;
+    if (typeof originalRenderCurrentlyReading === "function") {
+        window.renderCurrentlyReading = function () {
+            originalRenderCurrentlyReading();
+            requestAnimationFrame(refreshCards);
+        };
+    }
+
+    /* Keep chart labels readable without changing the chart bars. */
+    const originalRenderChart = window.renderChart;
+    if (typeof originalRenderChart === "function" && window.CanvasRenderingContext2D) {
+        window.renderChart = function () {
+            const originalFillText = CanvasRenderingContext2D.prototype.fillText;
+            CanvasRenderingContext2D.prototype.fillText = function (text, x, y, maxWidth) {
+                const oldFillStyle = this.fillStyle;
+                if (oldFillStyle === "#2d2119" || oldFillStyle === "#705b48") {
+                    this.fillStyle = "#f2dfbf";
+                }
+                const result = arguments.length >= 4
+                    ? originalFillText.call(this, text, x, y, maxWidth)
+                    : originalFillText.call(this, text, x, y);
+                this.fillStyle = oldFillStyle;
+                return result;
+            };
+            try {
+                return originalRenderChart.apply(this, arguments);
+            } finally {
+                CanvasRenderingContext2D.prototype.fillText = originalFillText;
+            }
+        };
     }
 
     window.addEventListener("resize", () => {
