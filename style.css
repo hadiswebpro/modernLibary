@@ -66,7 +66,6 @@
         text-align: center;
     }
 
-    /* Keep the small centered status used by the desktop design. */
     .book-card::before {
         position: absolute;
         left: 50%;
@@ -103,7 +102,6 @@
         background: rgba(75,48,32,.10);
     }
 
-    /* The large unstyled duplicate label must not appear on responsive cards. */
     .book-status-label {
         display: none !important;
     }
@@ -224,6 +222,19 @@
     main > .book-details .details-book {
         padding: 24px 18px 22px;
     }
+
+    .stats-heading span,
+    .chart-header span:not(.chart-decoration) {
+        color: var(--paper);
+    }
+
+    .stats-heading small,
+    .chart-header small,
+    .stat-card span,
+    .stat-card small {
+        color: rgba(250,242,223,.72);
+        font-size: .62rem;
+    }
 }
 
 @media (max-width: 380px) {
@@ -236,4 +247,28 @@
     .book-card .book-title { font-size: 1rem; }
     .book-card .book-author { font-size: .62rem; }
     .book-card .reading-page { font-size: .66rem; }
+
+    .stats-heading small,
+    .chart-header small,
+    .stat-card span,
+    .stat-card small {
+        font-size: .64rem;
+    }
+}
+
+/* =========================================================
+   JOURNAL / CHART TYPOGRAPHY
+   Keep the existing layout; only improve readability.
+========================================================= */
+
+.stats-heading span,
+.chart-header > div > span {
+    color: var(--paper);
+}
+
+.stats-heading small,
+.chart-header small,
+.stat-card span,
+.stat-card small {
+    color: rgba(250,242,223,.72);
 }
