@@ -19,6 +19,7 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
+    <script src="install.js" defer></script>
 </head>
 <body>
 
@@ -173,5 +174,14 @@
 
 <script src="script.js" defer></script>
 <script src="navigation-fixes.js" defer></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+      console.error("Service Worker registration failed:", error);
+    });
+  });
+}
+</script>
 </body>
 </html>
